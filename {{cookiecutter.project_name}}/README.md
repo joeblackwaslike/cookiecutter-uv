@@ -17,7 +17,7 @@
 
 First, create a repository on GitHub with the same name as this project, and then run the following commands:
 
-```bash
+```shell
 git init -b main
 git add .
 git commit -m "init commit"
@@ -25,17 +25,20 @@ git remote add origin git@github.com:{{cookiecutter.author_github_handle}}/{{coo
 git push -u origin main
 ```
 
-Or you can use the `gh` CLI to create the remote repository:
+Or you can use the `gh` CLI to create the remote repository from the current directory:
 
 ```shell
-gh repo create {{cookiecutter.project_name}} --description "{{cookiecutter.project_description}}" --public --source=. --remote=origin
+git init -b main
+git add .
+git commit -m "init commit"
+gh repo create {{cookiecutter.project_name}} --description "{{cookiecutter.project_description}}" --public --source=. --remote=origin --push
 ```
 
 ### 2. Set Up Your Development Environment
 
 Then, install the environment and the pre-commit hooks with
 
-```bash
+```shell
 make install
 ```
 
@@ -45,7 +48,7 @@ This will also generate your `uv.lock` file
 
 Initially, the CI/CD pipeline might be failing due to formatting issues. To resolve those run:
 
-```bash
+```shell
 uv run pre-commit run -a
 ```
 
@@ -53,7 +56,7 @@ uv run pre-commit run -a
 
 Lastly, commit the changes made by the two steps above to your repository.
 
-```bash
+```shell
 git add .
 git commit -m 'Fix formatting issues'
 git push origin main
@@ -80,4 +83,4 @@ For more details, see [here](https://fpgmaas.github.io/cookiecutter-uv/features/
 
 ---
 
-Repository initiated with [fpgmaas/cookiecutter-uv](https://github.com/fpgmaas/cookiecutter-uv).
+Repository initiated with [joeblackwaslike/cookiecutter-uv](https://github.com/joeblackwaslike/cookiecutter-uv).

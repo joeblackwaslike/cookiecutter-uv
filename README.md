@@ -35,15 +35,21 @@ This is a modern Cookiecutter template that can be used to initiate a Python pro
 On your local machine, navigate to the directory in which you want to
 create a project directory, and run the following command:
 
-```bash
-uvx cookiecutter https://github.com/joeblackwaslike/cookiecutter-uv.git
+If cookiecutter is already installed
+```shell
+cookiecutter gh:joeblackwaslike/cookiecutter-uv
+```
+
+If you have `uv` installed but not `cookiecutter`
+```shell
+uvx cookiecutter gh:joeblackwaslike/cookiecutter-uv
 ```
 
 or if you don't have `uv` installed yet:
 
-```bash
-pip install cookiecutter
-cookiecutter https://github.com/joeblackwaslike/cookiecutter-uv.git
+```shell
+pipx install cookiecutter
+cookiecutter gh:joeblackwaslike/cookiecutter-uv
 ```
 
 Follow the prompts to configure your project. Once completed, a new directory containing your project will be created. Then navigate into your newly created project directory and follow the instructions in the `README.md` to complete the setup of your project.
