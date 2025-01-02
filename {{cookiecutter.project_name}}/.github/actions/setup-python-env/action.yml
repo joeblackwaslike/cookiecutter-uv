@@ -5,7 +5,7 @@ inputs:
   python-version:
     description: "Python version to use"
     required: true
-    default: "3.12"
+    default: "{{cookiecutter.python_version}}"
   uv-version:
     description: "uv version to use"
     required: true

@@ -25,6 +25,12 @@ git remote add origin git@github.com:{{cookiecutter.author_github_handle}}/{{coo
 git push -u origin main
 ```
 
+Or you can use the `gh` CLI to create the remote repository:
+
+```shell
+gh repo create {{cookiecutter.project_name}} --description "{{cookiecutter.project_description}}" --public --source=. --remote=origin
+```
+
 ### 2. Set Up Your Development Environment
 
 Then, install the environment and the pre-commit hooks with
