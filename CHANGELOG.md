@@ -14,6 +14,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 
+## [1.1.0] - 2025-01-18
+
+### Added
+- Added support for src layout
+
+### Changed
+- Updated the default ruff version to 0.9.2
+- Updated the default deptry version to 0.22.0
+
+
 ## [1.0.1] - 2025-01-09
 
 ### Added
