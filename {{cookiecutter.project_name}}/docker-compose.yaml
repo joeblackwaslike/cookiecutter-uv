@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+  {{cookiecutter.project_slug}}:
+    image: author_github_handle/{{cookiecutter.project_slug}}:latest
+    build: .
+    environment:
+    - PYTHONPATH=/app/src
+    command: python src/{{cookiecutter.project_slug}}/foo.py
