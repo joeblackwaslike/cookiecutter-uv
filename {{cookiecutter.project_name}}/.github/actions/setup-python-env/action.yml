@@ -22,7 +22,7 @@ runs:
       uses: astral-sh/setup-uv@v2
       with:
         version: {% raw %}${{ inputs.uv-version }}{% endraw %}
-        enable-cache: 'true'
+        enable-cache: "true"
         cache-suffix: {% raw %}${{ matrix.python-version }}{% endraw %}
 
     - name: Install Python dependencies

@@ -135,7 +135,7 @@ external = [ "WPS" ]
 
 # Plugin configs:
 flake8-import-conventions.banned-from = [ "ast" ]
-flake8-quotes.inline-quotes = "single"
+flake8-quotes.inline-quotes = "double"
 mccabe.max-complexity = 6
 pydocstyle.convention = "google"
 
@@ -146,6 +146,7 @@ pydocstyle.convention = "google"
   "S404", # subprocess calls are for tests
   "S603", # do not require `shell=True`
   "S607", # partial executable paths
+  "D103", # docstrings on public functions
 ]
 
 [tool.ruff.format]

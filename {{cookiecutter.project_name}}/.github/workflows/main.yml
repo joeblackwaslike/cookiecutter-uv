@@ -44,7 +44,7 @@ jobs:
           python-version: {% raw %}${{ matrix.python-version }}{% endraw %}
 
       - name: Run tests
-        run: uv run python -m pytest tests {% if cookiecutter.codecov == "y" %}--cov --cov-config=pyproject.toml --cov-report=xml{%- endif %}
+        run: uv run python -m pytest tests{% if cookiecutter.codecov == "y" %} --cov --cov-config=pyproject.toml --cov-report=xml{%- endif %}
 
       - name: Check typing
         run: uv run mypy
@@ -54,7 +54,6 @@ jobs:
         uses: codecov/codecov-action@v4
         if: {% raw %}${{ matrix.python-version == '3.11' }}{% endraw %}
 {%- endif %}
-
 {%- if cookiecutter.mkdocs == "y" %}
 
   check-docs:
