@@ -17,7 +17,7 @@ On your local machine, navigate to the directory in which you want to
 create a project directory, and run the following command:
 
 ```bash
-uvx cookiecutter https://github.com/fpgmaas/cookiecutter-uv.git
+uvx cookiecutter https://github.com/joeblackwaslike/cookiecutter-uv.git
 ```
 
 For an explanation of the prompt arguments, see
@@ -104,7 +104,7 @@ Give your release a title, and add a new tag in the form `*.*.*` where the
 ## Step 12: Enable your documentation ct'd
 
 Then navigate to `Settings > Code and Automation > Pages`. If you succesfully created a new release,
-you should see a notification saying ` Your site is ready to be published at https://<author_github_handle>.github.io/<project_name>/`.
+you should see a notification saying ` Your site is ready to be published at https://<github_handle>.github.io/<project_name>/`.
 
 To finalize deploying your documentation, under `Source`, select the branch `gh-pages`.
 

@@ -13,7 +13,7 @@ Your full name.
 
 Your email address.
 
-**author_github_handle**
+**github_handle**
 
 Your github handle, i.e. `<handle>` in `https://github.com/<handle>`
 
@@ -31,7 +31,7 @@ replaced with `_`. This will be how you import your code later, e.g.
 from <project_slug> import foo
 ```
 
-**project_description**
+**description**
 
 A short description of your project.
 

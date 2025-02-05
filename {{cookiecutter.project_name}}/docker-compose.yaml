@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   {{cookiecutter.project_slug}}:
-    image: author_github_handle/{{cookiecutter.project_slug}}:latest
+    image: github_handle/{{cookiecutter.project_slug}}:latest
     build: .
     environment:
     - PYTHONPATH=/app/src

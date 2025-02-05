@@ -1,7 +1,7 @@
 [project]
 name = "{{cookiecutter.project_name}}"
 version = "0.1.0"
-description = "{{cookiecutter.project_description}}"
+description = "{{cookiecutter.description}}"
 authors = [{ name = "{{cookiecutter.author}}", email = "{{cookiecutter.email}}" }]
 readme = "README.md"
 keywords = ['python']
@@ -18,10 +18,10 @@ dependencies = [
 ]
 
 [project.urls]
-"Bug Tracker" = "https://github.com/{{cookiecutter.author_github_handle}}/{{cookiecutter.project_name}}/issues"
-Homepage = "https://{{cookiecutter.author_github_handle}}.github.io/{{cookiecutter.project_name}}/"
-Repository = "https://github.com/{{cookiecutter.author_github_handle}}/{{cookiecutter.project_name}}"
-Documentation = "https://{{cookiecutter.author_github_handle}}.github.io/{{cookiecutter.project_name}}/"
+"Bug Tracker" = "https://github.com/{{cookiecutter.github_handle}}/{{cookiecutter.project_name}}/issues"
+Homepage = "https://{{cookiecutter.github_handle}}.github.io/{{cookiecutter.project_name}}/"
+Repository = "https://github.com/{{cookiecutter.github_handle}}/{{cookiecutter.project_name}}"
+Documentation = "https://{{cookiecutter.github_handle}}.github.io/{{cookiecutter.project_name}}/"
 
 [dependency-groups]
 dev = [
@@ -48,6 +48,7 @@ py-modules = ["src"]
 [tool.mypy]
 # The mypy configurations: http://bit.ly/2zEl9WI
 files = ["src"]
+plugins = ["pydantic.mypy"]
 strict = true
 disallow_untyped_defs = true
 disallow_any_unimported = true
