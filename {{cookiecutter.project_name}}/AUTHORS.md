@@ -1,3 +1,3 @@
 # Contributors
-_ [Florian Maas](https://github.com/fpgmaas)
+- [Florian Maas](https://github.com/fpgmaas)
 - [{{ cookiecutter.author }}](https://github.com/{{ cookiecutter.github_handle }})
