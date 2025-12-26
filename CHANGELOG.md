@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added support for src layout
 - Added docker-compose.yaml file
+
 ### Changed
 - Updated the default ruff version to 0.9.2
 - Updated the default deptry version to 0.22.0
