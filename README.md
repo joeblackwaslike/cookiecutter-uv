@@ -55,9 +55,16 @@ cookiecutter gh:joeblackwaslike/cookiecutter-uv
 
 Follow the prompts to configure your project. Once completed, a new directory containing your project will be created. Then navigate into your newly created project directory and follow the instructions in the `README.md` to complete the setup of your project.
 
-## Acknowledgements
+## Acknowledgements & Lineage
+* This project is partially based on [Florian Maas's](https://github.com/fpgmaas)\'s great
+[cookiecutter-uv](https://github.com/fpgmaas/cookiecutter-uv)
+repository.  Many additional improvements have been added from all the projects I've worked on over the last 12 years or so.  
+* Florian also credits [Audrey Feldroy's](https://github.com/audreyfeldroy) great [cookiecutter-pypackage](https://github.com/audreyfeldroy/cookiecutter-pypackage) repository.
 
-This project is partially based on [Audrey
-Feldroy\'s](https://github.com/audreyfeldroy)\'s great
-[cookiecutter-pypackage](https://github.com/audreyfeldroy/cookiecutter-pypackage)
-repository.
+
+## Feedback and contributing
+My mission with this is to build the best project starter for python projects that has everything you can want, the ability to customize and/or opt out of most everything, and save you the most time!
+
+I am only one person with very specific preferences.  If you have any feedback you can email me at `me@joeblack.nyc`.  If you find any bugs, mistakes, missed opportunities, or would like to contribute new functionality in any way, I would love to hear about it in an issue, feel free to email me the issue to get my attention.
+
+This project is under continuous iterative improvements as I find bugs, and better and more effective ways to do things.  But I can only do so much on my own, so please open an issue if you want to help/contribute and we can iterate and discuss how we can make this happen.  If you find an outright bug or mistake, just open a PR and describe all the details there.
