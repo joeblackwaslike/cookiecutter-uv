@@ -33,6 +33,9 @@ This is a modern Cookiecutter template that can be used to initiate a Python pro
 
 ## Quickstart
 
+[![Discord](https://img.shields.io/discord/1486035859747897414?logo=discord&label=Discord&color=5865F2)](https://discord.com/channels/1486035859747897414/1509515362012626944) [![Join Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/Fjc9zYHZyV)
+
+
 On your local machine, navigate to the directory in which you want to
 create a project directory, and run the following command:
 
