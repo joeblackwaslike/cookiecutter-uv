@@ -66,9 +66,9 @@ git push origin main
 You are now ready to start development on your project!
 The CI/CD pipeline will be triggered when you open a pull request, merge to main, or when you create a new release.
 
-To finalize the set-up for publishing to PyPI, see [here](https://joeblackwaslike.github.io/cookiecutter-uv/features/publishing/#set-up-for-pypi).
-For activating the automatic documentation with MkDocs, see [here](https://joeblackwaslike.github.io/cookiecutter-uv/features/mkdocs/#enabling-the-documentation-on-github).
-To enable the code coverage reports, see [here](https://joeblackwaslike.github.io/cookiecutter-uv/features/codecov/).
+To finalize the set-up for publishing to PyPI, see [here](https://joeblackwaslike.github.io/create-py-project/features/publishing/#set-up-for-pypi).
+For activating the automatic documentation with MkDocs, see [here](https://joeblackwaslike.github.io/create-py-project/features/mkdocs/#enabling-the-documentation-on-github).
+To enable the code coverage reports, see [here](https://joeblackwaslike.github.io/create-py-project/features/codecov/).
 
 ## Releasing a new version
 
@@ -79,9 +79,9 @@ To enable the code coverage reports, see [here](https://joeblackwaslike.github.i
 - Create a [new release](https://github.com/{{cookiecutter.github_handle}}/{{cookiecutter.project_name}}/releases/new) on Github.
 - Create a new tag in the form `*.*.*`.
 
-For more details, see [here](https://joeblackwaslike.github.io/cookiecutter-uv/features/cicd/#how-to-trigger-a-release).
+For more details, see [here](https://joeblackwaslike.github.io/create-py-project/features/cicd/#how-to-trigger-a-release).
 {%- endif %}
 
 ---
 
-Repository initiated with [joeblackwaslike/cookiecutter-uv](https://github.com/joeblackwaslike/cookiecutter-uv).
+Repository initiated with [joeblackwaslike/create-py-project](https://github.com/joeblackwaslike/create-py-project).

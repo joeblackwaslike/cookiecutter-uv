@@ -9,7 +9,7 @@
     "include_github_actions": ["y", "n"],
     "publish_to_pypi": ["y", "n"],
     "deptry": ["y", "n"],
-    "mkdocs": ["y", "n"],
+    "include_docs": ["y", "n"],
     "codecov": ["y", "n"],
     "dockerfile": ["y", "n"],
     "devcontainer": ["y", "n"],

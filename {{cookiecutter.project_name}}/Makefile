@@ -47,15 +47,15 @@ publish: ## Publish a release to PyPI.
 build-and-publish: build publish ## Build and publish.
 {%- endif%}
 
-{%- if cookiecutter.mkdocs == "y" %}
+{%- if cookiecutter.include_docs == "y" %}
 
 .PHONY: docs-test
 docs-test: ## Test if documentation can be built without warnings or errors
-	@uv run mkdocs build -s
+	@cd docs && npm install && npm run build
 
 .PHONY: docs
 docs: ## Build and serve the documentation
-	@uv run mkdocs serve
+	@cd docs && npm install && npm run start
 
 {%- endif %}
 

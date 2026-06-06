@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 import os
+import re
 import shutil
 
 PROJECT_DIRECTORY = os.path.realpath(os.path.curdir)
+PYPROJECT = os.path.join(PROJECT_DIRECTORY, "pyproject.toml")
 
 
 def remove_file(filepath: str) -> None:
@@ -19,16 +21,52 @@ def move_file(filepath: str, target: str) -> None:
     os.rename(os.path.join(PROJECT_DIRECTORY, filepath), os.path.join(PROJECT_DIRECTORY, target))
 
 
+def remove_toml_lines(path: str, lines_to_remove: list[str]) -> None:
+    with open(path) as f:
+        content = f.read()
+    for line in lines_to_remove:
+        content = content.replace(line + "\n", "")
+    with open(path, "w") as f:
+        f.write(content)
+
+
+def remove_toml_section(path: str, section: str) -> None:
+    """Remove a TOML section header and all its key-value pairs until the next section."""
+    with open(path) as f:
+        content = f.read()
+    content = re.sub(
+        r"\n\[" + re.escape(section) + r"\][^\[]*",
+        "",
+        content,
+        flags=re.DOTALL,
+    )
+    with open(path, "w") as f:
+        f.write(content)
+
+
 if __name__ == "__main__":
+    if "{{cookiecutter.deptry}}" != "y":
+        remove_toml_lines(PYPROJECT, [
+            '    "deptry~=0.23.1",',
+            '    "ipython~=9.6.0",',
+        ])
+
+    if "{{cookiecutter.codecov}}" != "y":
+        remove_toml_lines(PYPROJECT, [
+            '    "coverage[toml]~=7.10.7",',
+            '    "pytest-cov~=7.0.0",',
+        ])
+        remove_toml_section(PYPROJECT, "tool.coverage.run")
+        remove_toml_section(PYPROJECT, "tool.coverage.report")
+
     if "{{cookiecutter.include_github_actions}}" != "y":
         remove_dir(".github")
     else:
-        if "{{cookiecutter.mkdocs}}" != "y" and "{{cookiecutter.publish_to_pypi}}" == "n":
+        if "{{cookiecutter.include_docs}}" != "y" and "{{cookiecutter.publish_to_pypi}}" == "n":
             remove_file(".github/workflows/on-release-main.yml")
 
-    if "{{cookiecutter.mkdocs}}" != "y":
+    if "{{cookiecutter.include_docs}}" != "y":
         remove_dir("docs")
-        remove_file("mkdocs.yml")
 
     if "{{cookiecutter.dockerfile}}" != "y":
         remove_file("Dockerfile")

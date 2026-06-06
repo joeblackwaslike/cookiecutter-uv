@@ -1,13 +1,17 @@
 [project]
-name = "cookiecutter-uv"
-version = "1.1.0"
-description = "A python cookiecutter application to create a new python project that uses uv to manage its dependencies."
+name = "create-py-project"
+version = "0.1.0"
+description = "Scaffold and maintain production-ready Python projects with a rich CLI and Claude Code plugin."
 authors = [{ name = "Joe Black", email = "me@joeblack.nyc" }]
 readme = "README.md"
-keywords = ['cookiecutter', 'template', 'uv']
+keywords = ['python', 'scaffold', 'cli', 'template', 'uv', 'cookiecutter']
 requires-python = ">=3.9,<4.0"
 dependencies = [
-  "cookiecutter>=2.1.1"
+  "cookiecutter>=2.1.1",
+  "typer[all]>=0.12",
+  "questionary>=2.0",
+  "pydantic>=2.0",
+  "tomlkit>=0.12",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -24,10 +28,13 @@ classifiers = [
     "Topic :: Software Development :: Code Generators",
 ]
 
+[project.scripts]
+create-py-project = "create_py_project.cli:app"
+
 [project.urls]
-Repository = "https://github.com/joeblackwaslike/cookiecutter-uv"
-Documentation = "https://joeblackwaslike.github.io/cookiecutter-uv/"
-Homepage = "https://joeblackwaslike.github.io/cookiecutter-uv/"
+Repository = "https://github.com/joeblackwaslike/create-py-project"
+Documentation = "https://joeblackwaslike.github.io/create-py-project/"
+Homepage = "https://joeblackwaslike.github.io/create-py-project/"
 
 [dependency-groups]
 dev = [
@@ -39,9 +46,6 @@ dev = [
     "mypy>=0.991",
     "pytest-cov>=4.0.0",
     "ruff>=0.9.2",
-    "mkdocs>=1.4.2",
-    "mkdocs-material>=8.5.10",
-    "mkdocstrings[python]>=0.19.0",
 ]
 
 [tool.uv]
@@ -51,11 +55,8 @@ package = true
 requires = ["setuptools >= 61.0"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-packages = ["cookiecutter_uv"]
-
-[tool.setuptools.package-data]
-"cookiecutter_uv" = ["*"]
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -65,10 +66,10 @@ skip_empty = true
 
 [tool.coverage.run]
 branch = true
-source = ["cookiecutter_uv"]
+source = ["create_py_project"]
 
 [tool.mypy]
-files = ['cookiecutter_uv']
+files = ['src/create_py_project']
 disallow_untyped_defs = true
 disallow_any_unimported = true
 no_implicit_optional = true
@@ -89,6 +90,7 @@ DEP002 = ["cookiecutter"]
 target-version = "py39"
 line-length = 120
 fix = true
+exclude = ["{{cookiecutter.project_name}}"]
 
 [tool.ruff.lint]
 select = [
