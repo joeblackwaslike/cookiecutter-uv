@@ -58,8 +58,8 @@ create-py-project --update /path/to/existing-project
 ```
 
 ## Acknowledgements & Lineage
-* This project is partially based on [Florian Maas's](https://github.com/fpgmaas)\'s great
-[create-py-project](https://github.com/fpgmaas/create-py-project)
+* This project is partially based on [Florian Maas's](https://github.com/fpgmaas) great
+[cookiecutter-uv](https://github.com/fpgmaas/cookiecutter-uv)
 repository.  Many additional improvements have been added from all the projects I've worked on over the last 12 years or so.  
 * Florian also credits [Audrey Feldroy's](https://github.com/audreyfeldroy) great [cookiecutter-pypackage](https://github.com/audreyfeldroy/cookiecutter-pypackage) repository.
 

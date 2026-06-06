@@ -213,12 +213,15 @@ def _add_deptry(pyproject_path: Path) -> None:
 
 
 def _run_beads(target: Path) -> None:
-    result = subprocess.run(
-        ["bd", "init", "--skip-agents", "--non-interactive"],
-        cwd=target,
-        capture_output=True,
-    )
-    if result.returncode != 0:
+    try:
+        result = subprocess.run(
+            ["bd", "init", "--skip-agents", "--non-interactive"],
+            cwd=target,
+            capture_output=True,
+        )
+        if result.returncode != 0:
+            console.print("[yellow]bd init failed — check beads CLI installation[/yellow]")
+    except FileNotFoundError:
         console.print("[yellow]bd not found — install the beads CLI to use this feature[/yellow]")
 
 

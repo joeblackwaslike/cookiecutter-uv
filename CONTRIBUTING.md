@@ -51,7 +51,7 @@ Please note this documentation assumes you already have `uv` and `git` installed
 2. Clone your fork locally:
 
 ```bash
-cd <directory_in_which_repo_should_be_created
+cd <directory_in_which_repo_should_be_created>
 git clone git@github.com:YOUR_NAME/create-py-project.git
 ```
 

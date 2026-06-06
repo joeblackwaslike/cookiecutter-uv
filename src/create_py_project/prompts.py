@@ -16,8 +16,11 @@ console = Console()
 
 def load_user_defaults() -> UserDefaults:
     if RC_PATH.exists():
-        data = tomlkit.parse(RC_PATH.read_text()).get("defaults", {})
-        return UserDefaults(**data)
+        try:
+            data = tomlkit.parse(RC_PATH.read_text()).get("defaults", {})
+            return UserDefaults(**data)
+        except Exception:
+            console.print(f"[yellow]Warning: could not parse {RC_PATH}, using defaults[/yellow]")
     return UserDefaults()
 
 
@@ -44,8 +47,14 @@ def run_prompts(project_name_arg: str | None = None) -> ProjectConfig:
             validate=lambda v: bool(v) and all(c.isalnum() or c == "-" for c in v)
             or "Use kebab-case letters, digits, and hyphens only",
         ).ask()
+        if project_name is None:
+            console.print("[yellow]Aborted.[/yellow]")
+            sys.exit(0)
 
     description = questionary.text("Short description:").ask()
+    if description is None:
+        console.print("[yellow]Aborted.[/yellow]")
+        sys.exit(0)
 
     author = questionary.text("Author name:", default=defaults.author).ask() or defaults.author
     email = questionary.text("Email:", default=defaults.email).ask() or defaults.email

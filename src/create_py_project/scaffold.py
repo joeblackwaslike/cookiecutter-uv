@@ -60,12 +60,15 @@ def scaffold(dest_dir: str, config: ProjectConfig) -> None:
         )
 
     # Beads
-    result = subprocess.run(
-        ["bd", "init", "--skip-agents", "--non-interactive"],
-        cwd=project_dir,
-        capture_output=True,
-    )
-    if result.returncode != 0:
+    try:
+        result = subprocess.run(
+            ["bd", "init", "--skip-agents", "--non-interactive"],
+            cwd=project_dir,
+            capture_output=True,
+        )
+        if result.returncode != 0:
+            console.print("[dim yellow]bd init failed — skipping Beads init[/dim yellow]")
+    except FileNotFoundError:
         console.print("[dim yellow]bd not found — skipping Beads init[/dim yellow]")
 
     # Serena

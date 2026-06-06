@@ -109,7 +109,7 @@ Installed with `CARGO_INSTALL_ROOT=/usr/local` → binaries land in `/usr/local/
 | eza | `eza` | Modern `ls` replacement |
 | hyperfine | `hyperfine` | CLI benchmarking tool |
 | procs | `procs` | Modern `ps` replacement |
-| sad | `sad` | CLI search-and-replace (stream ed) |
+| sad | `sad` | CLI search-and-replace (stream editor) |
 | git-delta | `delta` | Syntax-highlighted git diffs |
 
 To add a cargo tool: add to the `cargo install` block in the Dockerfile and add a row here.
