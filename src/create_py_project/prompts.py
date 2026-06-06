@@ -38,7 +38,10 @@ def save_user_defaults(d: UserDefaults) -> None:
     tbl["github_handle"] = d.github_handle
     tbl["python_version"] = d.python_version
     doc["defaults"] = tbl
-    RC_PATH.write_text(tomlkit.dumps(doc))
+    try:
+        RC_PATH.write_text(tomlkit.dumps(doc))
+    except OSError:
+        console.print(f"[yellow]Warning: could not save defaults to {RC_PATH}[/yellow]")
 
 
 def run_prompts(project_name_arg: str | None = None) -> ProjectConfig:
@@ -74,7 +77,7 @@ def run_prompts(project_name_arg: str | None = None) -> ProjectConfig:
         default=defaults.python_version if defaults.python_version in ["3.12", "3.11", "3.10", "3.9"] else "3.12",
     ).ask()
 
-    features: list[str] = questionary.checkbox(
+    features: list[str] | None = questionary.checkbox(
         "Features to include:",
         choices=[
             questionary.Choice("GitHub Actions CI", value="github_actions", checked=True),
@@ -86,6 +89,9 @@ def run_prompts(project_name_arg: str | None = None) -> ProjectConfig:
             questionary.Choice("Publish to PyPI", value="publish_to_pypi"),
         ],
     ).ask()
+    if features is None:
+        console.print("[yellow]Aborted.[/yellow]")
+        sys.exit(0)
 
     license_choice = questionary.select(
         "License:",
@@ -99,6 +105,9 @@ def run_prompts(project_name_arg: str | None = None) -> ProjectConfig:
         ],
         default="MIT license",
     ).ask()
+    if license_choice is None:
+        console.print("[yellow]Aborted.[/yellow]")
+        sys.exit(0)
 
     config = ProjectConfig.create(
         project_name=project_name,

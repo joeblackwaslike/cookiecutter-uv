@@ -46,12 +46,12 @@ class ProjectConfig(BaseModel):
         return v
 
     @model_validator(mode="after")
-    def _derive_slug(self) -> "ProjectConfig":
+    def _derive_slug(self) -> ProjectConfig:
         self.project_slug = self.project_name.lower().replace("-", "_")
         return self
 
     @classmethod
-    def create(cls, *, project_name: str, **kwargs: object) -> "ProjectConfig":
+    def create(cls, *, project_name: str, **kwargs: object) -> ProjectConfig:
         return cls(project_name=project_name, **kwargs)  # type: ignore[arg-type]
 
     def to_cookiecutter_dict(self) -> dict[str, str]:

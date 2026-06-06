@@ -140,7 +140,7 @@ def _get_project_name(target: Path) -> str:
         try:
             doc = tomlkit.parse(pyproject.read_text())
             return str(doc["project"]["name"])  # type: ignore[index]
-        except (KeyError, Exception):
+        except Exception:
             pass
     return target.name
 
