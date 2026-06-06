@@ -40,8 +40,8 @@ class ProjectConfig(BaseModel):
     @field_validator("project_name")
     @classmethod
     def _validate_project_name(cls, v: str) -> str:
-        if not re.match(r"^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$", v):
-            msg = "project_name must be kebab-case (letters, digits, hyphens; no leading/trailing hyphens)"
+        if not re.match(r"^[a-z0-9]([a-z0-9-]*[a-z0-9])?$", v):
+            msg = "project_name must be kebab-case (lowercase letters, digits, hyphens; no leading/trailing hyphens)"
             raise ValueError(msg)
         return v
 

@@ -19,7 +19,7 @@ def load_user_defaults() -> UserDefaults:
         try:
             data = tomlkit.parse(RC_PATH.read_text()).get("defaults", {})
             return UserDefaults(**data)
-        except Exception:
+        except (OSError, tomlkit.exceptions.TOMLKitError, ValueError):
             console.print(f"[yellow]Warning: could not parse {RC_PATH}, using defaults[/yellow]")
     return UserDefaults()
 

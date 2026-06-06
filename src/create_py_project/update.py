@@ -140,7 +140,7 @@ def _get_project_name(target: Path) -> str:
         try:
             doc = tomlkit.parse(pyproject.read_text())
             return str(doc["project"]["name"])  # type: ignore[index]
-        except Exception:
+        except (KeyError, tomlkit.exceptions.TOMLKitError, OSError):
             pass
     return target.name
 
@@ -169,6 +169,9 @@ def _copy_dir(src_rel: str, target: Path, project_name: str) -> None:
         console.print(f"[yellow]Template source not found: {src}[/yellow]")
         return
     if dst.exists():
+        if not questionary.confirm(f"Replace existing {dst.name}/ directory?", default=False).ask():
+            console.print(f"[yellow]Skipping {src_rel}[/yellow]")
+            return
         shutil.rmtree(dst)
     shutil.copytree(src, dst)
     _substitute_vars(dst, project_name)
@@ -211,7 +214,8 @@ def _add_deptry(pyproject_path: Path) -> None:
         return
     try:
         dev_deps = dep_groups["dev"]  # type: ignore[index]
-        dev_deps.append("deptry>=0.23.0")  # type: ignore[union-attr]
+        if not any("deptry" in str(dep) for dep in dev_deps):  # type: ignore[union-attr]
+            dev_deps.append("deptry>=0.23.0")  # type: ignore[union-attr]
     except KeyError:
         dep_groups["dev"] = ["deptry>=0.23.0"]  # type: ignore[index]
     pyproject_path.write_text(tomlkit.dumps(doc))

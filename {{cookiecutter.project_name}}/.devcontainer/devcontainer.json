@@ -84,9 +84,6 @@
     "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,readonly,consistency=cached",
     // GitHub CLI auth (read-only)
     "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind,readonly,consistency=cached",
-    // Local repos (read-only) — makes MCP server paths from settings.json resolve
-    // via the /Users/joe → /home/vscode symlink added in the Dockerfile
-    "source=${localEnv:HOME}/github/joeblackwaslike,target=/home/vscode/github/joeblackwaslike,type=bind,readonly,consistency=cached",
     // opencode (writable — config and state synced with host)
     "source=${localEnv:HOME}/.config/opencode,target=/home/vscode/.config/opencode,type=bind,readonly,consistency=cached",
     "source=${localEnv:HOME}/.local/share/opencode,target=/home/vscode/.local/share/opencode,type=bind,readonly,consistency=cached",
