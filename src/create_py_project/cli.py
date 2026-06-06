@@ -30,9 +30,10 @@ def main(
 
     if version:
         try:
+            from importlib.metadata import PackageNotFoundError
             from importlib.metadata import version as pkg_version
             typer.echo(pkg_version("create-py-project"))
-        except Exception:
+        except (PackageNotFoundError, Exception):
             typer.echo("0.1.0")
         raise typer.Exit()
 

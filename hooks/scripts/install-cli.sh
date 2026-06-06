@@ -24,4 +24,4 @@ if pip install -e . --quiet 2>/dev/null; then
   exit 0
 fi
 
-echo '{"continue": true, "suppressOutput": false, "status": "install failed — run: uv tool install --editable $CLAUDE_PLUGIN_ROOT"}'
+echo "{\"continue\": true, \"suppressOutput\": false, \"status\": \"install failed — run: uv tool install --editable $CLAUDE_PLUGIN_ROOT\"}"

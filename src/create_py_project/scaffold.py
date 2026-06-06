@@ -61,16 +61,20 @@ def scaffold(dest_dir: str, config: ProjectConfig) -> None:
     ).ask()
     if push_choice in ("public", "private"):
         console.print("[dim]Creating GitHub repo...[/dim]")
-        subprocess.run(
-            [
-                "gh", "repo", "create",
-                f"{config.github_handle}/{config.project_name}",
-                f"--{push_choice}",
-                "--source=.", "--remote=origin", "--push",
-            ],
-            cwd=project_dir,
-            check=True,
-        )
+        try:
+            subprocess.run(
+                [
+                    "gh", "repo", "create",
+                    f"{config.github_handle}/{config.project_name}",
+                    f"--{push_choice}",
+                    "--source=.", "--remote=origin", "--push",
+                ],
+                cwd=project_dir,
+                check=True,
+            )
+        except (subprocess.CalledProcessError, FileNotFoundError) as exc:
+            console.print(f"[yellow]GitHub repo creation failed: {exc}[/yellow]")
+            console.print("[dim]You can push manually later with: gh repo create[/dim]")
 
     # Beads
     try:

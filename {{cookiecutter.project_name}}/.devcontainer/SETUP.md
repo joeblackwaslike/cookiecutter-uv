@@ -84,31 +84,15 @@ directly in their environment files.
 
 ---
 
-## 3. Install the `devcontainer-init` alias
-
-Add this alias to your macOS `~/.zshrc` (not the container's) so you can bootstrap the
-devcontainer into any project from anywhere:
+## 3. Open the container
 
 ```bash
-alias devcontainer-init='~/github/joeblackwaslike/devcontainer/.devcontainer/scripts/init-project.sh'
+cd {{cookiecutter.project_name}}
+code .
+# VS Code: "Dev Containers: Reopen in Container"
 ```
 
-Then run `source ~/.zshrc` or open a new terminal.
-
-Usage:
-
-```bash
-# Bootstrap the devcontainer into a project
-cd ~/github/myproject && devcontainer-init
-
-# Or target a directory directly
-devcontainer-init ~/github/anotherproject
-
-# Preview without writing
-devcontainer-init --dry-run
-```
-
-See [init-project.sh](scripts/init-project.sh) and [README.md](README.md) for full documentation.
+The first build takes several minutes. Subsequent opens are fast (image is cached).
 
 ---
 
@@ -140,52 +124,10 @@ mkdir -p ~/.agents ~/.gemini ~/.codex ~/.openclaw ~/.config/opencode ~/.local/sh
 
 ---
 
-## 5. Open the container
+## 5. Troubleshooting
 
-```bash
-cd ~/github/joeblackwaslike/devcontainer
-code .
-# VS Code: "Dev Containers: Reopen in Container"
-```
+If the container fails to start, check:
 
-The first build takes several minutes. Subsequent opens are fast (image is cached).
-
----
-
-## 6. Publish the pre-built image (optional, one-time)
-
-Building the image once and pushing it to GHCR means no project ever has to build it locally.
-The `devcontainer-init` script automatically configures new projects to pull the pre-built image.
-
-### Authenticate to GHCR
-
-```bash
-# Generate a token at https://github.com/settings/tokens
-# Scopes required: write:packages, read:packages, delete:packages
-echo $GITHUB_TOKEN | docker login ghcr.io -u joeblackwaslike --password-stdin
-```
-
-### Build and push
-
-```bash
-cd ~/github/joeblackwaslike/devcontainer
-make push
-```
-
-This builds a multi-arch image (`linux/amd64` + `linux/arm64`) and pushes it to
-`ghcr.io/joeblackwaslike/devcontainer:latest`.
-
-### Make the package public (one-time)
-
-After the first push, go to
-`https://github.com/users/joeblackwaslike/packages/container/devcontainer/settings`
-and set visibility to **Public** so projects can pull it without authentication.
-
-### Re-publish after Dockerfile changes
-
-```bash
-make push
-```
-
-Projects pull `latest` on the next container rebuild — no changes needed in their
-`devcontainer.json`.
+- All required host directories exist (see step 4)
+- Docker is running (OrbStack or Docker Desktop)
+- You have the Dev Containers extension installed in VS Code

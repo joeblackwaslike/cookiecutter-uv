@@ -65,7 +65,7 @@ After the command completes, summarize:
 | devcontainer | `.devcontainer/` with Claude Code dev environment |
 | AGENTS.md | Agent instruction file (Codex, Gemini, Cursor, Copilot) |
 | CLAUDE.md | `@AGENTS.md` import for Claude Code |
-| GitHub Actions CI | `.github/workflows/main.yml` — lint, test, build |
+| GitHub Actions CI | `.github/` directory — lint, test, build workflows |
 | PyPI publish workflow | `.github/workflows/on-release-main.yml` |
 | ruff config | `[tool.ruff]` block in `pyproject.toml` |
 | mypy config | `[tool.mypy]` block in `pyproject.toml` |

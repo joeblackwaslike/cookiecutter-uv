@@ -19,7 +19,7 @@ This is a modern Cookiecutter template that can be used to initiate a Python pro
 - Code quality with [ruff](https://github.com/charliermarsh/ruff), [mypy](https://mypy.readthedocs.io/en/stable/), [wemake-python-styleguide](https://wemake-python-styleguide.readthedocs.io/en/latest/pages/usage/setup.html), [deptry](https://github.com/joeblackwaslike/deptry/) and [prettier](https://prettier.io/)
 - Publishing to [PyPI](https://pypi.org) by creating a new release on GitHub
 - Testing and coverage with [pytest](https://docs.pytest.org/en/7.1.x/) and [codecov](https://about.codecov.io/)
-- Documentation with [MkDocs](https://www.mkdocs.org/)
+- Documentation with [Docusaurus](https://docusaurus.io/)
 - Compatibility testing for multiple versions of Python with [tox-uv](https://github.com/tox-dev/tox-uv)
 - Containerization with [Docker](https://www.docker.com/)
 - Development environment with [VSCode devcontainers](https://code.visualstudio.com/docs/devcontainers/containers)
@@ -28,21 +28,20 @@ An example of a repository generated with this package can be found [here](https
 
 ## Quickstart
 
-On your local machine, navigate to the directory in which you want to
-create a project directory, and run the following command:
+Navigate to the directory where you want your new project and run:
 
 ```bash
-uvx cookiecutter https://github.com/joeblackwaslike/create-py-project.git
+uvx create-py-project my-project
 ```
 
-or if you don't have `uv` installed yet:
+Or install globally first:
 
 ```bash
-pip install cookiecutter
-cookiecutter https://github.com/joeblackwaslike/create-py-project.git
+uv tool install create-py-project
+create-py-project my-project
 ```
 
-Follow the prompts to configure your project. Once completed, a new directory containing your project will be created. Then navigate into your newly created project directory and follow the instructions in the `README.md` to complete the setup of your project.
+Follow the guided prompts to configure your project. Once complete, a new directory `my-project/` will be created with everything set up.
 
 ### Acknowledgements
 

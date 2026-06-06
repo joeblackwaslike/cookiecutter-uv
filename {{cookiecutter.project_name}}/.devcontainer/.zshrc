@@ -144,10 +144,10 @@ if [[ -o interactive ]]; then
     eval "$(oh-my-posh init zsh --config ~/.mytheme.omp.yaml)"
 fi
 
-set -aU path
+typeset -aU path
 
 # source optional runtime env files installed by asdf
-set -aU includes
+typeset -a includes
 includes=(
     "${ASDF_DATA_DIR:-/home/vscode/.asdf}/installs/rust/stable/env"
     "${ASDF_DATA_DIR:-/home/vscode/.asdf}/installs/gcloud/"*".0.0/path.zsh.inc"
