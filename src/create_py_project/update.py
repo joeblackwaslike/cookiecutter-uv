@@ -139,7 +139,7 @@ def _get_project_name(target: Path) -> str:
     if pyproject.exists():
         try:
             doc = tomlkit.parse(pyproject.read_text())
-            return str(doc["project"]["name"])  # type: ignore[index]
+            return str(doc["project"]["name"])
         except KeyError:
             pass
         except (tomlkit.exceptions.TOMLKitError, OSError) as exc:
@@ -212,16 +212,16 @@ def _substitute_vars(directory: Path, project_name: str) -> None:
 def _add_deptry(pyproject_path: Path) -> None:
     doc = tomlkit.parse(pyproject_path.read_text())
     try:
-        dep_groups = doc["dependency-groups"]  # type: ignore[index]
+        dep_groups = doc["dependency-groups"]
     except KeyError:
         _append_toml(pyproject_path, '[dependency-groups]\ndev = ["deptry>=0.23.0"]\n')
         return
     try:
-        dev_deps = dep_groups["dev"]  # type: ignore[index]
-        if not any("deptry" in str(dep) for dep in dev_deps):  # type: ignore[union-attr]
-            dev_deps.append("deptry>=0.23.0")  # type: ignore[union-attr]
+        dev_deps = dep_groups["dev"]
+        if not any("deptry" in str(dep) for dep in dev_deps):
+            dev_deps.append("deptry>=0.23.0")
     except KeyError:
-        dep_groups["dev"] = ["deptry>=0.23.0"]  # type: ignore[index]
+        dep_groups["dev"] = ["deptry>=0.23.0"]
     pyproject_path.write_text(tomlkit.dumps(doc))
 
 
@@ -247,30 +247,32 @@ def _init_serena(target: Path, project_name: str) -> None:
 # ── Detection ─────────────────────────────────────────────────────────────────
 
 
+def _write_file(path: Path, content: str) -> None:
+    path.write_text(content)
+
+
 def detect_available_updates(target: Path) -> list[UpdateOption]:
     project_name = _get_project_name(target)
     pyproject = target / "pyproject.toml"
     options: list[UpdateOption] = []
 
     if not (target / ".devcontainer").exists():
-        pn = project_name  # capture for lambda
         options.append(
             UpdateOption(
                 value="devcontainer",
                 label="Add .devcontainer/",
                 hint="Full Claude Code dev environment (custom image, mounts, API keys)",
-                apply=lambda t, p=pn: _copy_dir(".devcontainer", t, p),
+                apply=lambda t: _copy_dir(".devcontainer", t, project_name),
             )
         )
 
     if not (target / "AGENTS.md").exists():
-        pn = project_name
         options.append(
             UpdateOption(
                 value="agents_md",
                 label="Add AGENTS.md",
                 hint="Agent instruction file (Codex, Gemini, Cursor, Copilot)",
-                apply=lambda t, p=pn: _copy_file("AGENTS.md", t, p),
+                apply=lambda t: _copy_file("AGENTS.md", t, project_name),
             )
         )
 
@@ -280,28 +282,26 @@ def detect_available_updates(target: Path) -> list[UpdateOption]:
                 value="claude_md",
                 label="Add CLAUDE.md",
                 hint="Single-line @AGENTS.md import for Claude Code",
-                apply=lambda t: (t / "CLAUDE.md").write_text("@AGENTS.md\n"),
+                apply=lambda t: _write_file(t / "CLAUDE.md", "@AGENTS.md\n"),
             )
         )
 
     if not (target / ".github" / "workflows").exists():
-        pn = project_name
         options.append(
             UpdateOption(
                 value="github_actions",
                 label="Add GitHub Actions CI (.github/workflows/)",
                 hint="Lint, typecheck, test, build",
-                apply=lambda t, p=pn: _copy_dir(".github", t, p),
+                apply=lambda t: _copy_dir(".github", t, project_name),
             )
         )
     elif not (target / ".github" / "workflows" / "on-release-main.yml").exists():
-        pn = project_name
         options.append(
             UpdateOption(
                 value="pypi_publish",
                 label="Add PyPI publish workflow",
                 hint=".github/workflows/on-release-main.yml",
-                apply=lambda t, p=pn: _copy_file(".github/workflows/on-release-main.yml", t, p),
+                apply=lambda t: _copy_file(".github/workflows/on-release-main.yml", t, project_name),
             )
         )
 
@@ -346,13 +346,12 @@ def detect_available_updates(target: Path) -> list[UpdateOption]:
         )
 
     if not (target / ".pre-commit-config.yaml").exists():
-        pn = project_name
         options.append(
             UpdateOption(
                 value="pre_commit",
                 label="Add .pre-commit-config.yaml",
                 hint="ruff + WPS + prettier hooks",
-                apply=lambda t, p=pn: _copy_file(".pre-commit-config.yaml", t, p),
+                apply=lambda t: _copy_file(".pre-commit-config.yaml", t, project_name),
             )
         )
 
@@ -367,24 +366,22 @@ def detect_available_updates(target: Path) -> list[UpdateOption]:
         )
 
     if not (target / "docs").exists():
-        pn = project_name
         options.append(
             UpdateOption(
                 value="docs",
                 label="Add Docusaurus docs site (docs/)",
                 hint="Copy Docusaurus scaffold from template",
-                apply=lambda t, p=pn: _copy_dir("docs", t, p),
+                apply=lambda t: _copy_dir("docs", t, project_name),
             )
         )
 
     if not (target / "Dockerfile").exists():
-        pn = project_name
         options.append(
             UpdateOption(
                 value="dockerfile",
                 label="Add Dockerfile",
                 hint="Multi-stage Python build",
-                apply=lambda t, p=pn: _copy_file("Dockerfile", t, p),
+                apply=lambda t: _copy_file("Dockerfile", t, project_name),
             )
         )
 
@@ -399,13 +396,12 @@ def detect_available_updates(target: Path) -> list[UpdateOption]:
         )
 
     if not (target / ".serena" / "project.yml").exists():
-        pn = project_name
         options.append(
             UpdateOption(
                 value="serena",
                 label="Initialize Serena project config",
                 hint="Creates .serena/project.yml",
-                apply=lambda t, p=pn: _init_serena(t, p),
+                apply=lambda t: _init_serena(t, project_name),
             )
         )
 

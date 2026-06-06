@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 import questionary
-from cookiecutter.main import cookiecutter
+from cookiecutter.main import cookiecutter  # type: ignore[import-untyped]
 from rich.console import Console
 
 from create_py_project.types import ProjectConfig
