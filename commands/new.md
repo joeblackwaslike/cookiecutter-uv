@@ -26,22 +26,22 @@ Use any stored `author`, `email`, `github_handle`, `python_version` as defaults 
 
 Ask the user for each of the following. If a default is available from the RC file, show it and ask them to confirm or change. Gather all values before proceeding (batch the non-obvious ones).
 
-| Field | Type | Default |
-|-------|------|---------|
-| `project_name` | string (kebab-case) | from argument, or ask |
-| `description` | string | — |
-| `author` | string | RC default |
-| `email` | email | RC default |
-| `github_handle` | string | RC default |
-| `python_version` | one of: 3.12, 3.11, 3.10, 3.9 | 3.12 |
-| `include_github_actions` | bool | true |
-| `devcontainer` | bool | true |
-| `include_docs` | bool (Docusaurus) | false |
-| `codecov` | bool | false |
-| `dockerfile` | bool | false |
-| `deptry` | bool | true |
-| `publish_to_pypi` | bool | false |
-| `open_source_license` | one of: MIT license, BSD license, ISC license, Apache Software License 2.0, GNU General Public License v3, Not open source | MIT license |
+| Field                    | Type                                                                                                                       | Default               |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| `project_name`           | string (kebab-case)                                                                                                        | from argument, or ask |
+| `description`            | string                                                                                                                     | —                     |
+| `author`                 | string                                                                                                                     | RC default            |
+| `email`                  | email                                                                                                                      | RC default            |
+| `github_handle`          | string                                                                                                                     | RC default            |
+| `python_version`         | one of: 3.12, 3.11, 3.10, 3.9                                                                                              | 3.12                  |
+| `include_github_actions` | bool                                                                                                                       | true                  |
+| `devcontainer`           | bool                                                                                                                       | true                  |
+| `include_docs`           | bool (Docusaurus)                                                                                                          | false                 |
+| `codecov`                | bool                                                                                                                       | false                 |
+| `dockerfile`             | bool                                                                                                                       | false                 |
+| `deptry`                 | bool                                                                                                                       | true                  |
+| `publish_to_pypi`        | bool                                                                                                                       | false                 |
+| `open_source_license`    | one of: MIT license, BSD license, ISC license, Apache Software License 2.0, GNU General Public License v3, Not open source | MIT license           |
 
 Show a summary table of the collected config and confirm with the user before proceeding.
 
@@ -108,11 +108,13 @@ git init && git add -A && git commit -m "chore: initial scaffold from create-py-
 Ask the user: "Push to GitHub? (public / private / skip)"
 
 If public or private:
+
 ```bash
 gh repo create GITHUB_HANDLE/PROJECT_NAME --VISIBILITY --source=. --remote=origin --push
 ```
 
 Run Beads and Serena init (errors are non-fatal):
+
 ```bash
 bd init --skip-agents --non-interactive 2>/dev/null || true
 mkdir -p .serena && echo "project_name: PROJECT_NAME\nlanguage: python" > .serena/project.yml
@@ -121,6 +123,7 @@ mkdir -p .serena && echo "project_name: PROJECT_NAME\nlanguage: python" > .seren
 ### Step 5 — Summary
 
 Report:
+
 - Full path to the created project
 - GitHub URL (if pushed)
 - Next steps: `cd PROJECT_NAME && uv sync && uv run pre-commit install`

@@ -241,9 +241,7 @@ def _run_beads(target: Path) -> None:
 def _init_serena(target: Path, project_name: str) -> None:
     serena_dir = target / ".serena"
     serena_dir.mkdir(exist_ok=True)
-    (serena_dir / "project.yml").write_text(
-        f"project_name: {project_name}\nlanguage: python\n"
-    )
+    (serena_dir / "project.yml").write_text(f"project_name: {project_name}\nlanguage: python\n")
 
 
 # ── Detection ─────────────────────────────────────────────────────────────────
@@ -256,130 +254,160 @@ def detect_available_updates(target: Path) -> list[UpdateOption]:
 
     if not (target / ".devcontainer").exists():
         pn = project_name  # capture for lambda
-        options.append(UpdateOption(
-            value="devcontainer",
-            label="Add .devcontainer/",
-            hint="Full Claude Code dev environment (custom image, mounts, API keys)",
-            apply=lambda t, p=pn: _copy_dir(".devcontainer", t, p),
-        ))
+        options.append(
+            UpdateOption(
+                value="devcontainer",
+                label="Add .devcontainer/",
+                hint="Full Claude Code dev environment (custom image, mounts, API keys)",
+                apply=lambda t, p=pn: _copy_dir(".devcontainer", t, p),
+            )
+        )
 
     if not (target / "AGENTS.md").exists():
         pn = project_name
-        options.append(UpdateOption(
-            value="agents_md",
-            label="Add AGENTS.md",
-            hint="Agent instruction file (Codex, Gemini, Cursor, Copilot)",
-            apply=lambda t, p=pn: _copy_file("AGENTS.md", t, p),
-        ))
+        options.append(
+            UpdateOption(
+                value="agents_md",
+                label="Add AGENTS.md",
+                hint="Agent instruction file (Codex, Gemini, Cursor, Copilot)",
+                apply=lambda t, p=pn: _copy_file("AGENTS.md", t, p),
+            )
+        )
 
     if not (target / "CLAUDE.md").exists():
-        options.append(UpdateOption(
-            value="claude_md",
-            label="Add CLAUDE.md",
-            hint="Single-line @AGENTS.md import for Claude Code",
-            apply=lambda t: (t / "CLAUDE.md").write_text("@AGENTS.md\n"),
-        ))
+        options.append(
+            UpdateOption(
+                value="claude_md",
+                label="Add CLAUDE.md",
+                hint="Single-line @AGENTS.md import for Claude Code",
+                apply=lambda t: (t / "CLAUDE.md").write_text("@AGENTS.md\n"),
+            )
+        )
 
     if not (target / ".github" / "workflows").exists():
         pn = project_name
-        options.append(UpdateOption(
-            value="github_actions",
-            label="Add GitHub Actions CI (.github/workflows/)",
-            hint="Lint, typecheck, test, build",
-            apply=lambda t, p=pn: _copy_dir(".github", t, p),
-        ))
+        options.append(
+            UpdateOption(
+                value="github_actions",
+                label="Add GitHub Actions CI (.github/workflows/)",
+                hint="Lint, typecheck, test, build",
+                apply=lambda t, p=pn: _copy_dir(".github", t, p),
+            )
+        )
     elif not (target / ".github" / "workflows" / "on-release-main.yml").exists():
         pn = project_name
-        options.append(UpdateOption(
-            value="pypi_publish",
-            label="Add PyPI publish workflow",
-            hint=".github/workflows/on-release-main.yml",
-            apply=lambda t, p=pn: _copy_file(".github/workflows/on-release-main.yml", t, p),
-        ))
+        options.append(
+            UpdateOption(
+                value="pypi_publish",
+                label="Add PyPI publish workflow",
+                hint=".github/workflows/on-release-main.yml",
+                apply=lambda t, p=pn: _copy_file(".github/workflows/on-release-main.yml", t, p),
+            )
+        )
 
     if pyproject.exists() and not _has_toml_section(pyproject, "tool", "ruff"):
-        options.append(UpdateOption(
-            value="ruff",
-            label="Add ruff config to pyproject.toml",
-            hint="Full linting ruleset with WPS support, google docstrings",
-            apply=lambda t: _append_toml(t / "pyproject.toml", _RUFF_TOML),
-        ))
+        options.append(
+            UpdateOption(
+                value="ruff",
+                label="Add ruff config to pyproject.toml",
+                hint="Full linting ruleset with WPS support, google docstrings",
+                apply=lambda t: _append_toml(t / "pyproject.toml", _RUFF_TOML),
+            )
+        )
 
     if pyproject.exists() and not _has_toml_section(pyproject, "tool", "mypy"):
-        options.append(UpdateOption(
-            value="mypy",
-            label="Add mypy config to pyproject.toml",
-            hint="Strict typing with pydantic plugin",
-            apply=lambda t: _append_toml(t / "pyproject.toml", _MYPY_TOML),
-        ))
+        options.append(
+            UpdateOption(
+                value="mypy",
+                label="Add mypy config to pyproject.toml",
+                hint="Strict typing with pydantic plugin",
+                apply=lambda t: _append_toml(t / "pyproject.toml", _MYPY_TOML),
+            )
+        )
 
     if pyproject.exists() and not _has_toml_section(pyproject, "tool", "pytest"):
-        options.append(UpdateOption(
-            value="pytest",
-            label="Add pytest config to pyproject.toml",
-            hint='pythonpath = ["src"], testpaths = ["tests"]',
-            apply=lambda t: _append_toml(t / "pyproject.toml", _PYTEST_TOML),
-        ))
+        options.append(
+            UpdateOption(
+                value="pytest",
+                label="Add pytest config to pyproject.toml",
+                hint='pythonpath = ["src"], testpaths = ["tests"]',
+                apply=lambda t: _append_toml(t / "pyproject.toml", _PYTEST_TOML),
+            )
+        )
 
     if pyproject.exists() and not _has_toml_section(pyproject, "tool", "coverage"):
-        options.append(UpdateOption(
-            value="coverage",
-            label="Add coverage config to pyproject.toml",
-            hint="Branch coverage, src source",
-            apply=lambda t: _append_toml(t / "pyproject.toml", _COVERAGE_TOML),
-        ))
+        options.append(
+            UpdateOption(
+                value="coverage",
+                label="Add coverage config to pyproject.toml",
+                hint="Branch coverage, src source",
+                apply=lambda t: _append_toml(t / "pyproject.toml", _COVERAGE_TOML),
+            )
+        )
 
     if not (target / ".pre-commit-config.yaml").exists():
         pn = project_name
-        options.append(UpdateOption(
-            value="pre_commit",
-            label="Add .pre-commit-config.yaml",
-            hint="ruff + WPS + prettier hooks",
-            apply=lambda t, p=pn: _copy_file(".pre-commit-config.yaml", t, p),
-        ))
+        options.append(
+            UpdateOption(
+                value="pre_commit",
+                label="Add .pre-commit-config.yaml",
+                hint="ruff + WPS + prettier hooks",
+                apply=lambda t, p=pn: _copy_file(".pre-commit-config.yaml", t, p),
+            )
+        )
 
     if pyproject.exists() and "deptry" not in pyproject.read_text():
-        options.append(UpdateOption(
-            value="deptry",
-            label="Add deptry to dev dependencies",
-            hint="Detects unused / missing / misplaced dependencies",
-            apply=lambda t: _add_deptry(t / "pyproject.toml"),
-        ))
+        options.append(
+            UpdateOption(
+                value="deptry",
+                label="Add deptry to dev dependencies",
+                hint="Detects unused / missing / misplaced dependencies",
+                apply=lambda t: _add_deptry(t / "pyproject.toml"),
+            )
+        )
 
     if not (target / "docs").exists():
         pn = project_name
-        options.append(UpdateOption(
-            value="docs",
-            label="Add Docusaurus docs site (docs/)",
-            hint="Copy Docusaurus scaffold from template",
-            apply=lambda t, p=pn: _copy_dir("docs", t, p),
-        ))
+        options.append(
+            UpdateOption(
+                value="docs",
+                label="Add Docusaurus docs site (docs/)",
+                hint="Copy Docusaurus scaffold from template",
+                apply=lambda t, p=pn: _copy_dir("docs", t, p),
+            )
+        )
 
     if not (target / "Dockerfile").exists():
         pn = project_name
-        options.append(UpdateOption(
-            value="dockerfile",
-            label="Add Dockerfile",
-            hint="Multi-stage Python build",
-            apply=lambda t, p=pn: _copy_file("Dockerfile", t, p),
-        ))
+        options.append(
+            UpdateOption(
+                value="dockerfile",
+                label="Add Dockerfile",
+                hint="Multi-stage Python build",
+                apply=lambda t, p=pn: _copy_file("Dockerfile", t, p),
+            )
+        )
 
     if not (target / ".beads").exists():
-        options.append(UpdateOption(
-            value="beads",
-            label="Initialize Beads task manager",
-            hint="Runs: bd init --skip-agents",
-            apply=lambda t: _run_beads(t),
-        ))
+        options.append(
+            UpdateOption(
+                value="beads",
+                label="Initialize Beads task manager",
+                hint="Runs: bd init --skip-agents",
+                apply=lambda t: _run_beads(t),
+            )
+        )
 
     if not (target / ".serena" / "project.yml").exists():
         pn = project_name
-        options.append(UpdateOption(
-            value="serena",
-            label="Initialize Serena project config",
-            hint="Creates .serena/project.yml",
-            apply=lambda t, p=pn: _init_serena(t, p),
-        ))
+        options.append(
+            UpdateOption(
+                value="serena",
+                label="Initialize Serena project config",
+                hint="Creates .serena/project.yml",
+                apply=lambda t, p=pn: _init_serena(t, p),
+            )
+        )
 
     return options
 
@@ -401,15 +429,8 @@ def update_project(target_dir: str) -> None:
         console.print("[green]✓ Project is already up to date![/green]")
         return
 
-    choices = [
-        questionary.Choice(
-            f"{o.label}  [dim]{o.hint}[/dim]", value=o.value, checked=True
-        )
-        for o in available
-    ]
-    selected_values: list[str] = questionary.checkbox(
-        "Select updates to apply:", choices=choices
-    ).ask()
+    choices = [questionary.Choice(f"{o.label}  [dim]{o.hint}[/dim]", value=o.value, checked=True) for o in available]
+    selected_values: list[str] = questionary.checkbox("Select updates to apply:", choices=choices).ask()
 
     if not selected_values:
         console.print("[yellow]No updates selected.[/yellow]")

@@ -1,13 +1,13 @@
 {
-  "SessionStart": [
-    {
-      "hooks": [
+    "SessionStart": [
         {
-          "type": "command",
-          "command": "bash $CLAUDE_PLUGIN_ROOT/hooks/scripts/install-cli.sh",
-          "timeout": 60
+            "hooks": [
+                {
+                    "type": "command",
+                    "command": "bash $CLAUDE_PLUGIN_ROOT/hooks/scripts/install-cli.sh",
+                    "timeout": 60
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ]
 }

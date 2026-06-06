@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 import typer
 
 app = typer.Typer(
@@ -15,8 +13,8 @@ app = typer.Typer(
 @app.callback(invoke_without_command=True)
 def main(
     ctx: typer.Context,
-    project_name: Optional[str] = typer.Argument(None, help="Name of the new project"),
-    update: Optional[str] = typer.Option(
+    project_name: str | None = typer.Argument(None, help="Name of the new project"),
+    update: str | None = typer.Option(
         None,
         "--update",
         "-u",
@@ -32,6 +30,7 @@ def main(
         try:
             from importlib.metadata import PackageNotFoundError
             from importlib.metadata import version as pkg_version
+
             typer.echo(pkg_version("create-py-project"))
         except PackageNotFoundError:
             typer.echo("0.1.0")
@@ -39,9 +38,11 @@ def main(
 
     if update is not None:
         from create_py_project.update import update_project
+
         update_project(update or ".")
     elif project_name is not None:
         from create_py_project.scaffold import run_new
+
         run_new(project_name)
     else:
         typer.echo(ctx.get_help())
@@ -49,10 +50,11 @@ def main(
 
 @app.command("new")
 def new_cmd(
-    project_name: Optional[str] = typer.Argument(None, help="Project name (kebab-case)"),
+    project_name: str | None = typer.Argument(None, help="Project name (kebab-case)"),
 ) -> None:
     """Scaffold a new Python project through guided prompts."""
     from create_py_project.scaffold import run_new
+
     run_new(project_name)
 
 
@@ -62,4 +64,5 @@ def update_cmd(
 ) -> None:
     """Retrofit an existing Python project with create-py-project tooling."""
     from create_py_project.update import update_project
+
     update_project(target_dir)

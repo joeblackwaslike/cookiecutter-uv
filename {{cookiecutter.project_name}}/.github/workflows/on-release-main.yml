@@ -68,5 +68,5 @@ jobs:
         uses: ./.github/actions/setup-python-env
 
       - name: Deploy documentation
-        run: uv run mkdocs gh-deploy --force
+        run: cd docs && npm ci && npm run build
 {% endif %}

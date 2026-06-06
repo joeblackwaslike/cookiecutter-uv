@@ -90,7 +90,7 @@ DEP002 = ["cookiecutter"]
 target-version = "py39"
 line-length = 120
 fix = true
-exclude = ["{{cookiecutter.project_name}}"]
+exclude = ["[{][{]cookiecutter*"]
 
 [tool.ruff.lint]
 select = [
@@ -130,10 +130,17 @@ ignore = [
     "E501",
     # DoNotAssignLambda
     "E731",
+    # TooComplex
+    "C901",
+    # AvoidSpecifyingLongMessagesOutsideExceptionClass
+    "TRY003",
+    # ConsiderMovingToElseBlock
+    "TRY300",
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101", "S603"]
+"src/create_py_project/*" = ["S603", "S607"]
 
 [tool.ruff.lint.isort]
 required-imports = ["from __future__ import annotations"]

@@ -56,18 +56,20 @@ def scaffold(dest_dir: str, config: ProjectConfig) -> None:
         sys.exit(1)
 
     # GitHub
-    push_choice = questionary.select(
-        "Push to GitHub?", choices=["public", "private", "skip"], default="skip"
-    ).ask()
+    push_choice = questionary.select("Push to GitHub?", choices=["public", "private", "skip"], default="skip").ask()
     if push_choice in ("public", "private"):
         console.print("[dim]Creating GitHub repo...[/dim]")
         try:
             subprocess.run(
                 [
-                    "gh", "repo", "create",
+                    "gh",
+                    "repo",
+                    "create",
                     f"{config.github_handle}/{config.project_name}",
                     f"--{push_choice}",
-                    "--source=.", "--remote=origin", "--push",
+                    "--source=.",
+                    "--remote=origin",
+                    "--push",
                 ],
                 cwd=project_dir,
                 check=True,
@@ -91,14 +93,10 @@ def scaffold(dest_dir: str, config: ProjectConfig) -> None:
     # Serena
     serena_dir = project_dir / ".serena"
     serena_dir.mkdir(exist_ok=True)
-    (serena_dir / "project.yml").write_text(
-        f"project_name: {config.project_name}\nlanguage: python\n"
-    )
+    (serena_dir / "project.yml").write_text(f"project_name: {config.project_name}\nlanguage: python\n")
 
     console.print(f"\n[bold green]✓ Project created at {project_dir}[/bold green]")
-    console.print(
-        f"[dim]Next: cd {config.project_name} && uv sync && uv run pre-commit install[/dim]"
-    )
+    console.print(f"[dim]Next: cd {config.project_name} && uv sync && uv run pre-commit install[/dim]")
 
 
 def run_new(project_name: str | None) -> None:

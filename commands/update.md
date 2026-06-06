@@ -32,6 +32,7 @@ create-py-project update "$TARGET_DIR"
 ```
 
 This will:
+
 1. Detect which patterns are missing from the target project
 2. Present a multi-select checkbox list
 3. Apply the selected updates
@@ -54,26 +55,27 @@ update_project('$TARGET_DIR')
 ### Step 3 — Report results
 
 After the command completes, summarize:
+
 - Which updates were applied
 - Any updates that failed and why
 - Suggested next steps (e.g., `uv sync`, `uv run pre-commit install`, `git add -A && git commit`)
 
 ### Available update options
 
-| Option | What it adds |
-|--------|-------------|
-| devcontainer | `.devcontainer/` with Claude Code dev environment |
-| AGENTS.md | Agent instruction file (Codex, Gemini, Cursor, Copilot) |
-| CLAUDE.md | `@AGENTS.md` import for Claude Code |
-| GitHub Actions CI | `.github/` directory — lint, test, build workflows |
-| PyPI publish workflow | `.github/workflows/on-release-main.yml` |
-| ruff config | `[tool.ruff]` block in `pyproject.toml` |
-| mypy config | `[tool.mypy]` block in `pyproject.toml` |
-| pytest config | `[tool.pytest.ini_options]` in `pyproject.toml` |
-| coverage config | `[tool.coverage.*]` in `pyproject.toml` |
-| pre-commit + WPS | `.pre-commit-config.yaml` with ruff + WPS + prettier |
-| deptry | `deptry` added to dev deps |
-| Docusaurus docs | `docs/` Docusaurus site scaffold |
-| Dockerfile | Multi-stage Python Docker build |
-| Init Beads | `.beads/` via `bd init --skip-agents` |
-| Init Serena | `.serena/project.yml` |
+| Option                | What it adds                                            |
+| --------------------- | ------------------------------------------------------- |
+| devcontainer          | `.devcontainer/` with Claude Code dev environment       |
+| AGENTS.md             | Agent instruction file (Codex, Gemini, Cursor, Copilot) |
+| CLAUDE.md             | `@AGENTS.md` import for Claude Code                     |
+| GitHub Actions CI     | `.github/` directory — lint, test, build workflows      |
+| PyPI publish workflow | `.github/workflows/on-release-main.yml`                 |
+| ruff config           | `[tool.ruff]` block in `pyproject.toml`                 |
+| mypy config           | `[tool.mypy]` block in `pyproject.toml`                 |
+| pytest config         | `[tool.pytest.ini_options]` in `pyproject.toml`         |
+| coverage config       | `[tool.coverage.*]` in `pyproject.toml`                 |
+| pre-commit + WPS      | `.pre-commit-config.yaml` with ruff + WPS + prettier    |
+| deptry                | `deptry` added to dev deps                              |
+| Docusaurus docs       | `docs/` Docusaurus site scaffold                        |
+| Dockerfile            | Multi-stage Python Docker build                         |
+| Init Beads            | `.beads/` via `bd init --skip-agents`                   |
+| Init Serena           | `.serena/project.yml`                                   |

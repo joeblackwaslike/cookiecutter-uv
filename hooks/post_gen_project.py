@@ -49,16 +49,22 @@ def remove_toml_section(path: str, section: str) -> None:
 
 if __name__ == "__main__":
     if "{{cookiecutter.deptry}}" != "y":
-        remove_toml_lines(PYPROJECT, [
-            '    "deptry~=0.23.1",',
-            '    "ipython~=9.6.0",',
-        ])
+        remove_toml_lines(
+            PYPROJECT,
+            [
+                '    "deptry~=0.23.1",',
+                '    "ipython~=9.6.0",',
+            ],
+        )
 
     if "{{cookiecutter.codecov}}" != "y":
-        remove_toml_lines(PYPROJECT, [
-            '    "coverage[toml]~=7.10.7",',
-            '    "pytest-cov~=7.0.0",',
-        ])
+        remove_toml_lines(
+            PYPROJECT,
+            [
+                '    "coverage[toml]~=7.10.7",',
+                '    "pytest-cov~=7.0.0",',
+            ],
+        )
         remove_toml_section(PYPROJECT, "tool.coverage.run")
         remove_toml_section(PYPROJECT, "tool.coverage.report")
 
