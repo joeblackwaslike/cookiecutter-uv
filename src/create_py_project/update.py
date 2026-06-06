@@ -205,11 +205,16 @@ def _substitute_vars(directory: Path, project_name: str) -> None:
 def _add_deptry(pyproject_path: Path) -> None:
     doc = tomlkit.parse(pyproject_path.read_text())
     try:
-        dev_deps = doc["dependency-groups"]["dev"]  # type: ignore[index]
-        dev_deps.append("deptry>=0.23.0")  # type: ignore[union-attr]
-        pyproject_path.write_text(tomlkit.dumps(doc))
-    except (KeyError, AttributeError):
+        dep_groups = doc["dependency-groups"]  # type: ignore[index]
+    except KeyError:
         _append_toml(pyproject_path, '[dependency-groups]\ndev = ["deptry>=0.23.0"]\n')
+        return
+    try:
+        dev_deps = dep_groups["dev"]  # type: ignore[index]
+        dev_deps.append("deptry>=0.23.0")  # type: ignore[union-attr]
+    except KeyError:
+        dep_groups["dev"] = ["deptry>=0.23.0"]  # type: ignore[index]
+    pyproject_path.write_text(tomlkit.dumps(doc))
 
 
 def _run_beads(target: Path) -> None:

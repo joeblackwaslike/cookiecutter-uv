@@ -35,10 +35,9 @@ def remove_toml_section(path: str, section: str) -> None:
     with open(path) as f:
         content = f.read()
     content = re.sub(
-        r"\n\[" + re.escape(section) + r"\][^\[]*",
+        r"(?m)^\[" + re.escape(section) + r"\]\s*\n(?:(?!\[).*\n)*",
         "",
         content,
-        flags=re.DOTALL,
     )
     with open(path, "w") as f:
         f.write(content)
