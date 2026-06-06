@@ -47,7 +47,8 @@ class ProjectConfig(BaseModel):
 
     @model_validator(mode="after")
     def _derive_slug(self) -> ProjectConfig:
-        self.project_slug = self.project_name.lower().replace("-", "_")
+        if not self.project_slug:
+            self.project_slug = self.project_name.lower().replace("-", "_")
         return self
 
     @classmethod

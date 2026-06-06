@@ -140,8 +140,10 @@ def _get_project_name(target: Path) -> str:
         try:
             doc = tomlkit.parse(pyproject.read_text())
             return str(doc["project"]["name"])  # type: ignore[index]
-        except (KeyError, tomlkit.exceptions.TOMLKitError, OSError):
+        except KeyError:
             pass
+        except (tomlkit.exceptions.TOMLKitError, OSError) as exc:
+            console.print(f"[yellow]Warning: could not read project name from {pyproject}: {exc}[/yellow]")
     return target.name
 
 
@@ -201,8 +203,10 @@ def _substitute_vars(directory: Path, project_name: str) -> None:
         if f.is_file():
             try:
                 f.write_text(_render_template(f.read_text(encoding="utf-8"), project_name))
-            except (UnicodeDecodeError, PermissionError):
+            except UnicodeDecodeError:
                 pass
+            except PermissionError as exc:
+                console.print(f"[yellow]Warning: could not update {f}: {exc}[/yellow]")
 
 
 def _add_deptry(pyproject_path: Path) -> None:

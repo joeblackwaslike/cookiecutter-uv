@@ -65,17 +65,29 @@ def run_prompts(project_name_arg: str | None = None) -> ProjectConfig:
         console.print("[yellow]Aborted.[/yellow]")
         sys.exit(0)
 
-    author = questionary.text("Author name:", default=defaults.author).ask() or defaults.author
-    email = questionary.text("Email:", default=defaults.email).ask() or defaults.email
-    github_handle = (
-        questionary.text("GitHub handle:", default=defaults.github_handle).ask()
-        or defaults.github_handle
-    )
+    author = questionary.text("Author name:", default=defaults.author).ask()
+    if author is None:
+        console.print("[yellow]Aborted.[/yellow]")
+        sys.exit(0)
+    author = author or defaults.author
+    email = questionary.text("Email:", default=defaults.email).ask()
+    if email is None:
+        console.print("[yellow]Aborted.[/yellow]")
+        sys.exit(0)
+    email = email or defaults.email
+    github_handle = questionary.text("GitHub handle:", default=defaults.github_handle).ask()
+    if github_handle is None:
+        console.print("[yellow]Aborted.[/yellow]")
+        sys.exit(0)
+    github_handle = github_handle or defaults.github_handle
     python_version = questionary.select(
         "Python version:",
         choices=["3.12", "3.11", "3.10", "3.9"],
         default=defaults.python_version if defaults.python_version in ["3.12", "3.11", "3.10", "3.9"] else "3.12",
     ).ask()
+    if python_version is None:
+        console.print("[yellow]Aborted.[/yellow]")
+        sys.exit(0)
 
     features: list[str] | None = questionary.checkbox(
         "Features to include:",
@@ -135,7 +147,8 @@ def run_prompts(project_name_arg: str | None = None) -> ProjectConfig:
     console.print(table)
     console.print()
 
-    if not questionary.confirm("Create project?", default=True).ask():
+    confirm = questionary.confirm("Create project?", default=True).ask()
+    if confirm is None or not confirm:
         console.print("[yellow]Aborted.[/yellow]")
         sys.exit(0)
 
