@@ -54,7 +54,7 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: {% raw %}${{ secrets.PYPI_TOKEN }}{% endraw %}
 {% endif %}
-{%- if cookiecutter.mkdocs == "y" %}
+{%- if cookiecutter.include_docs == "y" %}
   deploy-docs:
     {%- if cookiecutter.publish_to_pypi == "y" %}
     needs: publish

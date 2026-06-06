@@ -14,8 +14,14 @@ console = Console()
 
 
 def _template_dir() -> str:
-    # src/create_py_project/ → src/ → project root (where cookiecutter.json lives)
-    return str(Path(__file__).parent.parent.parent)
+    root = Path(__file__).parent.parent.parent
+    if not (root / "cookiecutter.json").exists():
+        console.print(
+            "[red]Template not found. This CLI must be installed in editable mode "
+            "(uv tool install --editable .) from the repository root.[/red]"
+        )
+        raise SystemExit(1)
+    return str(root)
 
 
 def scaffold(dest_dir: str, config: ProjectConfig) -> None:

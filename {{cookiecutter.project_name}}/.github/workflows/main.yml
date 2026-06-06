@@ -54,7 +54,7 @@ jobs:
         uses: codecov/codecov-action@v4
         if: {% raw %}${{ matrix.python-version == '3.11' }}{% endraw %}
 {%- endif %}
-{%- if cookiecutter.mkdocs == "y" %}
+{%- if cookiecutter.include_docs == "y" %}
 
   check-docs:
     runs-on: ubuntu-latest
