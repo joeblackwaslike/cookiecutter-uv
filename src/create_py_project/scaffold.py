@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -41,12 +42,18 @@ def scaffold(dest_dir: str, config: ProjectConfig) -> None:
 
     # Git
     console.print("[dim]Initializing git...[/dim]")
-    _run(["git", "init"], cwd=project_dir)
-    _run(["git", "add", "-A"], cwd=project_dir)
-    _run(
-        ["git", "commit", "-m", "chore: initial scaffold from create-py-project"],
-        cwd=project_dir,
-    )
+    try:
+        _run(["git", "init"], cwd=project_dir)
+        _run(["git", "add", "-A"], cwd=project_dir)
+        _run(
+            ["git", "commit", "-m", "chore: initial scaffold from create-py-project"],
+            cwd=project_dir,
+        )
+    except _CommandError as exc:
+        console.print(f"[red]{exc}[/red]")
+        console.print(f"[yellow]Cleaning up {project_dir}[/yellow]")
+        shutil.rmtree(project_dir, ignore_errors=True)
+        sys.exit(1)
 
     # GitHub
     push_choice = questionary.select(
@@ -98,8 +105,11 @@ def run_new(project_name: str | None) -> None:
     scaffold(dest_dir, config)
 
 
+class _CommandError(Exception):
+    pass
+
+
 def _run(cmd: list[str], cwd: Path) -> None:
     result = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
     if result.returncode != 0:
-        console.print(f"[red]Command failed:[/red] {' '.join(cmd)}\n{result.stderr}")
-        sys.exit(1)
+        raise _CommandError(f"Command failed: {' '.join(cmd)}\n{result.stderr}")

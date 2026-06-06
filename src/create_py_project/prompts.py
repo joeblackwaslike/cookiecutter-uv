@@ -25,7 +25,13 @@ def load_user_defaults() -> UserDefaults:
 
 
 def save_user_defaults(d: UserDefaults) -> None:
-    doc = tomlkit.document()
+    if RC_PATH.exists():
+        try:
+            doc = tomlkit.parse(RC_PATH.read_text())
+        except Exception:
+            doc = tomlkit.document()
+    else:
+        doc = tomlkit.document()
     tbl = tomlkit.table()
     tbl["author"] = d.author
     tbl["email"] = d.email
