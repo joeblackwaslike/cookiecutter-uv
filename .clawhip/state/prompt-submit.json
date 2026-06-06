@@ -1,8 +1,0 @@
-{
-  "observed_at": "2026-06-06T06:16:47.006Z",
-  "provider": "claude-code",
-  "event_name": "UserPromptSubmit",
-  "session_id": "8e96a866-84ed-4478-9a57-1934dad2642b",
-  "turn_id": null,
-  "prompt_summary": "commit and push all local changes"
-}

@@ -67,7 +67,7 @@
     // Local repos (read-only) — makes MCP server paths from settings.json resolve
     // via the /Users/joe → /home/vscode symlink added in the Dockerfile
     "source=${localEnv:HOME}/github/joeblackwaslike,target=/home/vscode/github/joeblackwaslike,type=bind,readonly,consistency=cached",
-    // opencode (read-only — managed on host)
+    // opencode (writable — config and state synced with host)
     "source=${localEnv:HOME}/.config/opencode,target=/home/vscode/.config/opencode,type=bind,readonly,consistency=cached",
     "source=${localEnv:HOME}/.local/share/opencode,target=/home/vscode/.local/share/opencode,type=bind,readonly,consistency=cached",
     // Gemini CLI (writable — writes session history, settings, state)

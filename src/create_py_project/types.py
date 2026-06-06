@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import re
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator, model_validator
 
 
 class UserDefaults(BaseModel):
@@ -14,7 +15,7 @@ class UserDefaults(BaseModel):
 
 class ProjectConfig(BaseModel):
     project_name: str
-    project_slug: str
+    project_slug: str = ""
     description: str
     author: str
     email: str
@@ -36,10 +37,22 @@ class ProjectConfig(BaseModel):
         "Not open source",
     ] = "MIT license"
 
+    @field_validator("project_name")
+    @classmethod
+    def _validate_project_name(cls, v: str) -> str:
+        if not re.match(r"^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$", v):
+            msg = "project_name must be kebab-case (letters, digits, hyphens; no leading/trailing hyphens)"
+            raise ValueError(msg)
+        return v
+
+    @model_validator(mode="after")
+    def _derive_slug(self) -> "ProjectConfig":
+        self.project_slug = self.project_name.lower().replace("-", "_")
+        return self
+
     @classmethod
     def create(cls, *, project_name: str, **kwargs: object) -> "ProjectConfig":
-        slug = project_name.lower().replace("-", "_")
-        return cls(project_name=project_name, project_slug=slug, **kwargs)  # type: ignore[arg-type]
+        return cls(project_name=project_name, **kwargs)  # type: ignore[arg-type]
 
     def to_cookiecutter_dict(self) -> dict[str, str]:
         def yn(v: bool) -> str:

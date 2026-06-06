@@ -67,7 +67,7 @@ You are now ready to start development on your project!
 The CI/CD pipeline will be triggered when you open a pull request, merge to main, or when you create a new release.
 
 To finalize the set-up for publishing to PyPI, see [here](https://joeblackwaslike.github.io/create-py-project/features/publishing/#set-up-for-pypi).
-For activating the automatic documentation with MkDocs, see [here](https://joeblackwaslike.github.io/create-py-project/features/mkdocs/#enabling-the-documentation-on-github).
+For setting up the Docusaurus documentation site, see the [docs/](docs/) directory.
 To enable the code coverage reports, see [here](https://joeblackwaslike.github.io/create-py-project/features/codecov/).
 
 ## Releasing a new version
