@@ -2,8 +2,9 @@
 from __future__ import annotations
 
 import os
-import re
 import shutil
+
+import tomlkit
 
 PROJECT_DIRECTORY = os.path.realpath(os.path.curdir)
 PYPROJECT = os.path.join(PROJECT_DIRECTORY, "pyproject.toml")
@@ -31,16 +32,19 @@ def remove_toml_lines(path: str, lines_to_remove: list[str]) -> None:
 
 
 def remove_toml_section(path: str, section: str) -> None:
-    """Remove a TOML section header and all its key-value pairs until the next section."""
+    """Remove a TOML section by key path (e.g. 'tool.coverage.run')."""
     with open(path) as f:
-        content = f.read()
-    content = re.sub(
-        r"(?m)^\[" + re.escape(section) + r"\]\s*\n(?:(?!\[).*\n)*",
-        "",
-        content,
-    )
+        doc = tomlkit.parse(f.read())
+    keys = section.split(".")
+    node = doc
+    for key in keys[:-1]:
+        if key not in node:
+            return
+        node = node[key]
+    if keys[-1] in node:
+        del node[keys[-1]]
     with open(path, "w") as f:
-        f.write(content)
+        f.write(tomlkit.dumps(doc))
 
 
 if __name__ == "__main__":

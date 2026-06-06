@@ -85,8 +85,8 @@
     // GitHub CLI auth (read-only)
     "source=${localEnv:HOME}/.config/gh,target=/home/vscode/.config/gh,type=bind,readonly,consistency=cached",
     // opencode (writable — config and state synced with host)
-    "source=${localEnv:HOME}/.config/opencode,target=/home/vscode/.config/opencode,type=bind,readonly,consistency=cached",
-    "source=${localEnv:HOME}/.local/share/opencode,target=/home/vscode/.local/share/opencode,type=bind,readonly,consistency=cached",
+    "source=${localEnv:HOME}/.config/opencode,target=/home/vscode/.config/opencode,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.local/share/opencode,target=/home/vscode/.local/share/opencode,type=bind,consistency=cached",
     // Gemini CLI (writable — writes session history, settings, state)
     "source=${localEnv:HOME}/.gemini,target=/home/vscode/.gemini,type=bind,consistency=cached",
     // openclaw identity + workspace (writable — writes credentials, logs, workspace state)

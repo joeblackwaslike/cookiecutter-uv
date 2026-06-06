@@ -53,8 +53,8 @@ def run_prompts(project_name_arg: str | None = None) -> ProjectConfig:
     else:
         project_name = questionary.text(
             "Project name (kebab-case):",
-            validate=lambda v: bool(v) and all(c.isalnum() or c == "-" for c in v)
-            or "Use kebab-case letters, digits, and hyphens only",
+            validate=lambda v: bool(v) and all(c.islower() or c.isdigit() or c == "-" for c in v)
+            or "Use lowercase letters, digits, and hyphens only",
         ).ask()
         if project_name is None:
             console.print("[yellow]Aborted.[/yellow]")
