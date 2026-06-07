@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import re
 from typing import Literal
 
@@ -20,7 +18,7 @@ class ProjectConfig(BaseModel):
     author: str
     email: str
     github_handle: str
-    python_version: Literal["3.12", "3.11", "3.10", "3.9"] = "3.12"
+    python_version: Literal["3.12", "3.11", "3.10"] = "3.12"
     include_github_actions: bool = True
     publish_to_pypi: bool = False
     deptry: bool = True
@@ -46,13 +44,13 @@ class ProjectConfig(BaseModel):
         return v
 
     @model_validator(mode="after")
-    def _derive_slug(self) -> ProjectConfig:
+    def _derive_slug(self) -> "ProjectConfig":
         if not self.project_slug:
             self.project_slug = self.project_name.lower().replace("-", "_")
         return self
 
     @classmethod
-    def create(cls, *, project_name: str, **kwargs: object) -> ProjectConfig:
+    def create(cls, *, project_name: str, **kwargs: object) -> "ProjectConfig":
         return cls(project_name=project_name, **kwargs)  # type: ignore[arg-type]
 
     def to_cookiecutter_dict(self) -> dict[str, str]:

@@ -5,7 +5,7 @@ description = "Scaffold and maintain production-ready Python projects with a ric
 authors = [{ name = "Joe Black", email = "me@joeblack.nyc" }]
 readme = "README.md"
 keywords = ['python', 'scaffold', 'cli', 'template', 'uv', 'cookiecutter']
-requires-python = ">=3.9,<4.0"
+requires-python = ">=3.10,<4.0"
 dependencies = [
   "cookiecutter>=2.1.1",
   "typer[all]>=0.12",
@@ -19,7 +19,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -88,7 +87,7 @@ DEP002 = ["cookiecutter"]
 DEP003 = ["create_py_project", "rich"]
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py310"
 line-length = 120
 fix = true
 exclude = ["[{][{]cookiecutter*"]
@@ -142,6 +141,3 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101", "S603"]
 "src/create_py_project/*" = ["S603", "S607"]
-
-[tool.ruff.lint.isort]
-required-imports = ["from __future__ import annotations"]

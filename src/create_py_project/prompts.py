@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import sys
 from pathlib import Path
 
@@ -83,8 +81,8 @@ def run_prompts(project_name_arg: str | None = None) -> ProjectConfig:
     github_handle = github_handle or defaults.github_handle
     python_version = questionary.select(
         "Python version:",
-        choices=["3.12", "3.11", "3.10", "3.9"],
-        default=defaults.python_version if defaults.python_version in ["3.12", "3.11", "3.10", "3.9"] else "3.12",
+        choices=["3.12", "3.11", "3.10"],
+        default=defaults.python_version if defaults.python_version in ["3.12", "3.11", "3.10"] else "3.12",
     ).ask()
     if python_version is None:
         console.print("[yellow]Aborted.[/yellow]")
