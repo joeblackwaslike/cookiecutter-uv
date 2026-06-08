@@ -60,6 +60,7 @@ pipeline so a merged release PR ships to PyPI.
 - `.serena/project.yml`, `hooks/scripts/install-cli.sh` (editable install + status text), `tests/` imports.
 - Repo rename (GitHub UI, user action): update `origin` remote, README badges, `mkdocs.yml` site refs, links.
 - Re-point SonarCloud project key to `spinup-py` (user action; see manual setup).
+- **Rename everything**, in this order: import package → PyPI/CLI name → GitHub repo → **local clone directory** (`~/github/joeblackwaslike/create-py-project` → `…/spinup-py`). The local-path move is **done last** (it changes the working directory, so it must follow all in-repo edits, commit, push, and the GitHub rename).
 
 ## Phase 1 — CLI `--non-interactive` (defaults-only)
 
