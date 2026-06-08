@@ -98,8 +98,8 @@ def scaffold(dest_dir: str, config: ProjectConfig) -> None:
         )
         if result.returncode != 0:
             console.print("[dim yellow]bd init failed — skipping Beads init[/dim yellow]")
-    except FileNotFoundError:
-        console.print("[dim yellow]bd not found — skipping Beads init[/dim yellow]")
+    except OSError:
+        console.print("[dim yellow]bd not found or not executable — skipping Beads init[/dim yellow]")
 
     # Serena
     serena_dir = project_dir / ".serena"

@@ -26,7 +26,10 @@ def save_user_defaults(d: UserDefaults) -> None:
     if RC_PATH.exists():
         try:
             doc = tomlkit.parse(RC_PATH.read_text())
-        except Exception:
+        except (OSError, tomlkit.exceptions.TOMLKitError) as exc:
+            console.print(
+                f"[yellow]Warning: could not parse {RC_PATH} ({exc}); " f"non-defaults sections will be lost[/yellow]"
+            )
             doc = tomlkit.document()
     else:
         doc = tomlkit.document()

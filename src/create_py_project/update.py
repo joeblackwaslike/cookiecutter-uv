@@ -140,7 +140,7 @@ def _get_project_name(target: Path) -> str:
             doc = tomlkit.parse(pyproject.read_text())
             return str(doc["project"]["name"])
         except KeyError:
-            pass
+            console.print(f"[dim]No [project].name in {pyproject}; falling back to directory name[/dim]")
         except (tomlkit.exceptions.TOMLKitError, OSError) as exc:
             console.print(f"[yellow]Warning: could not read project name from {pyproject}: {exc}[/yellow]")
     return target.name
@@ -211,7 +211,9 @@ def _substitute_vars(directory: Path, project_name: str) -> None:
             try:
                 f.write_text(_render_template(f.read_text(encoding="utf-8"), project_name))
             except UnicodeDecodeError:
-                pass
+                # Binary file (image, compiled artifact) — no template tokens to
+                # substitute. Logged so skipped files are traceable.
+                console.print(f"[dim]Skipping non-text file: {f}[/dim]")
             except PermissionError as exc:
                 console.print(f"[yellow]Warning: could not update {f}: {exc}[/yellow]")
 
@@ -258,8 +260,8 @@ def _run_beads(target: Path) -> None:
         )
         if result.returncode != 0:
             console.print("[yellow]bd init failed — check beads CLI installation[/yellow]")
-    except FileNotFoundError:
-        console.print("[yellow]bd not found — install the beads CLI to use this feature[/yellow]")
+    except OSError:
+        console.print("[yellow]bd not found or not executable — install the beads CLI to use this feature[/yellow]")
 
 
 def _init_serena(target: Path, project_name: str) -> None:
@@ -466,7 +468,10 @@ def update_project(target_dir: str) -> None:
         try:
             opt.apply(target)
             table.add_row("[green]✓[/green]", opt.label)
-        except Exception as exc:
+        # Only swallow expected runtime failures (file IO, TOML, subprocess);
+        # programming errors (AttributeError, TypeError, ...) propagate so a
+        # broken apply() shows a traceback instead of a silent "failed" row.
+        except (OSError, tomlkit.exceptions.TOMLKitError, subprocess.SubprocessError) as exc:
             table.add_row("[red]✗[/red]", f"{opt.label} — {exc}")
 
     console.print()
