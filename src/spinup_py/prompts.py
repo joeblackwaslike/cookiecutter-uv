@@ -8,27 +8,39 @@ from rich.table import Table
 
 from spinup_py.types import ProjectConfig, UserDefaults
 
-RC_PATH = Path.home() / ".create-py-projectrc.toml"
+RC_PATH = Path.home() / ".spinup-pyrc.toml"
+LEGACY_RC_PATH = Path.home() / ".create-py-projectrc.toml"
 console = Console()
 
 
-def load_user_defaults() -> UserDefaults:
+def _rc_read_path() -> Path | None:
+    """Path to read defaults from: new RC if present, else legacy, else None."""
     if RC_PATH.exists():
+        return RC_PATH
+    if LEGACY_RC_PATH.exists():
+        return LEGACY_RC_PATH
+    return None
+
+
+def load_user_defaults() -> UserDefaults:
+    read_path = _rc_read_path()
+    if read_path is not None:
         try:
-            data = tomlkit.parse(RC_PATH.read_text()).get("defaults", {})
+            data = tomlkit.parse(read_path.read_text()).get("defaults", {})
             return UserDefaults(**data)
         except (OSError, tomlkit.exceptions.TOMLKitError, ValueError):
-            console.print(f"[yellow]Warning: could not parse {RC_PATH}, using defaults[/yellow]")
+            console.print(f"[yellow]Warning: could not parse {read_path}, using defaults[/yellow]")
     return UserDefaults()
 
 
 def save_user_defaults(d: UserDefaults) -> None:
-    if RC_PATH.exists():
+    read_path = _rc_read_path()
+    if read_path is not None:
         try:
-            doc = tomlkit.parse(RC_PATH.read_text())
+            doc = tomlkit.parse(read_path.read_text())
         except (OSError, tomlkit.exceptions.TOMLKitError) as exc:
             console.print(
-                f"[yellow]Warning: could not parse {RC_PATH} ({exc}); " f"non-defaults sections will be lost[/yellow]"
+                f"[yellow]Warning: could not parse {read_path} ({exc}); " f"non-defaults sections will be lost[/yellow]"
             )
             doc = tomlkit.document()
     else:
@@ -46,7 +58,7 @@ def save_user_defaults(d: UserDefaults) -> None:
 
 
 def run_prompts(project_name_arg: str | None = None) -> ProjectConfig:
-    console.rule("[bold blue]create-py-project[/bold blue]")
+    console.rule("[bold blue]spinup-py[/bold blue]")
     defaults = load_user_defaults()
 
     if project_name_arg:

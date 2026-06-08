@@ -57,7 +57,7 @@ def scaffold(dest_dir: str, config: ProjectConfig) -> None:
         _run(["git", "init"], cwd=project_dir)
         _run(["git", "add", "-A"], cwd=project_dir)
         _run(
-            ["git", "commit", "-m", "chore: initial scaffold from create-py-project"],
+            ["git", "commit", "-m", "chore: initial scaffold from spinup-py"],
             cwd=project_dir,
         )
     except _CommandError as exc:

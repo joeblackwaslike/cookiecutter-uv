@@ -6,7 +6,9 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
+from spinup_py import prompts as prompts_mod
 from spinup_py import scaffold as scaffold_mod
+from spinup_py.prompts import load_user_defaults, save_user_defaults
 from spinup_py.scaffold import _CommandError, scaffold
 from spinup_py.types import ProjectConfig, UserDefaults
 from spinup_py.update import _has_dev_dependency, _render_template
@@ -108,6 +110,69 @@ def test_render_substitutes_name_and_slug() -> None:
 def test_render_strips_unresolved_tokens() -> None:
     out = _render_template("name={{cookiecutter.project_name}} extra={{cookiecutter.author}}", "p")
     assert out == "name=p extra="
+
+
+# ── RC file load/save with legacy back-compat ───────────────────────────────
+
+
+def test_load_user_defaults_reads_legacy_when_new_absent(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    new_rc = tmp_path / ".spinup-pyrc.toml"
+    legacy_rc = tmp_path / ".create-py-projectrc.toml"
+    legacy_rc.write_text(
+        '[defaults]\nauthor = "Legacy Author"\nemail = "legacy@example.com"\n'
+        'github_handle = "legacygh"\npython_version = "3.11"\n'
+    )
+    monkeypatch.setattr(prompts_mod, "RC_PATH", new_rc)
+    monkeypatch.setattr(prompts_mod, "LEGACY_RC_PATH", legacy_rc)
+
+    defaults = load_user_defaults()
+    assert defaults.author == "Legacy Author"
+    assert defaults.email == "legacy@example.com"
+    assert defaults.github_handle == "legacygh"
+    assert defaults.python_version == "3.11"
+
+
+def test_load_user_defaults_prefers_new_over_legacy(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    new_rc = tmp_path / ".spinup-pyrc.toml"
+    legacy_rc = tmp_path / ".create-py-projectrc.toml"
+    new_rc.write_text('[defaults]\nauthor = "New Author"\n')
+    legacy_rc.write_text('[defaults]\nauthor = "Legacy Author"\n')
+    monkeypatch.setattr(prompts_mod, "RC_PATH", new_rc)
+    monkeypatch.setattr(prompts_mod, "LEGACY_RC_PATH", legacy_rc)
+
+    assert load_user_defaults().author == "New Author"
+
+
+def test_save_user_defaults_writes_new_path(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    new_rc = tmp_path / ".spinup-pyrc.toml"
+    legacy_rc = tmp_path / ".create-py-projectrc.toml"
+    # Legacy file has both a defaults table and an unrelated section to preserve.
+    legacy_rc.write_text(
+        '[defaults]\nauthor = "Legacy Author"\n\n[other]\nkeep = "me"\n'
+    )
+    monkeypatch.setattr(prompts_mod, "RC_PATH", new_rc)
+    monkeypatch.setattr(prompts_mod, "LEGACY_RC_PATH", legacy_rc)
+
+    save_user_defaults(
+        UserDefaults(
+            author="Saved Author",
+            email="saved@example.com",
+            github_handle="savedgh",
+            python_version="3.12",
+        )
+    )
+
+    assert new_rc.exists()
+    content = new_rc.read_text()
+    assert "Saved Author" in content
+    # Non-defaults content from the legacy file is migrated/preserved.
+    assert "keep" in content
 
 
 # ── scaffold() git-failure cleanup ──────────────────────────────────────────
