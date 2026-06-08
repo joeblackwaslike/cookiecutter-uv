@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import re
 import shutil
 
 import tomlkit
@@ -20,13 +21,30 @@ def move_file(filepath: str, target: str) -> None:
     os.rename(os.path.join(PROJECT_DIRECTORY, filepath), os.path.join(PROJECT_DIRECTORY, target))
 
 
-def remove_toml_lines(path: str, lines_to_remove: list[str]) -> None:
+def _dep_name(spec: str) -> str:
+    """Extract the lowercased package name from a PEP 508 dependency string."""
+    return re.split(r"[<>=~!\[ ;]", spec.strip(), maxsplit=1)[0].lower()
+
+
+def remove_dependencies(path: str, names: list[str]) -> None:
+    """Remove dependencies (matched by package name) from dependency-groups.dev.
+
+    Matching is by package name only, so it is robust to version-pin changes
+    (e.g. ``deptry~=0.23.1`` -> ``deptry~=0.24.0``) and to extras such as
+    ``coverage[toml]``.
+    """
     with open(path) as f:
-        content = f.read()
-    for line in lines_to_remove:
-        content = content.replace(line + "\n", "")
+        doc = tomlkit.parse(f.read())
+    try:
+        dev_deps = doc["dependency-groups"]["dev"]
+    except KeyError:
+        return
+    targets = {name.lower() for name in names}
+    for dep in list(dev_deps):
+        if _dep_name(str(dep)) in targets:
+            dev_deps.remove(dep)
     with open(path, "w") as f:
-        f.write(content)
+        f.write(tomlkit.dumps(doc))
 
 
 def remove_toml_section(path: str, section: str) -> None:
@@ -47,22 +65,10 @@ def remove_toml_section(path: str, section: str) -> None:
 
 if __name__ == "__main__":
     if "{{cookiecutter.deptry}}" != "y":
-        remove_toml_lines(
-            PYPROJECT,
-            [
-                '    "deptry~=0.23.1",',
-                '    "ipython~=9.6.0",',
-            ],
-        )
+        remove_dependencies(PYPROJECT, ["deptry", "ipython"])
 
     if "{{cookiecutter.codecov}}" != "y":
-        remove_toml_lines(
-            PYPROJECT,
-            [
-                '    "coverage[toml]~=7.10.7",',
-                '    "pytest-cov~=7.0.0",',
-            ],
-        )
+        remove_dependencies(PYPROJECT, ["coverage", "pytest-cov"])
         remove_toml_section(PYPROJECT, "tool.coverage.run")
         remove_toml_section(PYPROJECT, "tool.coverage.report")
 
