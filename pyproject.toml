@@ -1,5 +1,5 @@
 [project]
-name = "create-py-project"
+name = "spinup-py"
 version = "0.1.0"
 description = "Scaffold and maintain production-ready Python projects with a rich CLI and Claude Code plugin."
 authors = [{ name = "Joe Black", email = "me@joeblack.nyc" }]
@@ -28,12 +28,12 @@ classifiers = [
 ]
 
 [project.scripts]
-create-py-project = "create_py_project.cli:app"
+spinup-py = "spinup_py.cli:app"
 
 [project.urls]
-Repository = "https://github.com/joeblackwaslike/create-py-project"
-Documentation = "https://joeblackwaslike.github.io/create-py-project/"
-Homepage = "https://joeblackwaslike.github.io/create-py-project/"
+Repository = "https://github.com/joeblackwaslike/spinup-py"
+Documentation = "https://joeblackwaslike.github.io/spinup-py/"
+Homepage = "https://joeblackwaslike.github.io/spinup-py/"
 
 [dependency-groups]
 dev = [

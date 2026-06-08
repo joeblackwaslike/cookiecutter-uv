@@ -1,7 +1,7 @@
 import typer
 
 app = typer.Typer(
-    name="create-py-project",
+    name="spinup-py",
     help="Scaffold and maintain production-ready Python projects.",
     no_args_is_help=False,
     add_completion=False,
@@ -29,7 +29,7 @@ def main(
             from importlib.metadata import PackageNotFoundError
             from importlib.metadata import version as pkg_version
 
-            typer.echo(pkg_version("create-py-project"))
+            typer.echo(pkg_version("spinup-py"))
         except PackageNotFoundError:
             typer.echo("0.1.0")
         raise typer.Exit()
@@ -60,7 +60,7 @@ def new_cmd(
 def update_cmd(
     target_dir: str = typer.Argument(".", help="Path to the project to retrofit"),
 ) -> None:
-    """Retrofit an existing Python project with create-py-project tooling."""
+    """Retrofit an existing Python project with spinup-py tooling."""
     from spinup_py.update import update_project
 
     update_project(target_dir)
