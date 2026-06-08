@@ -23,7 +23,7 @@ def _template_dir() -> str:
     return str(root)
 
 
-def scaffold(dest_dir: str, config: ProjectConfig) -> None:
+def scaffold(dest_dir: str, config: ProjectConfig, non_interactive: bool = False) -> None:
     """Scaffold a new project from the template.
 
     The project is always created at ``<parent of dest_dir>/<config.project_name>``:
@@ -67,27 +67,30 @@ def scaffold(dest_dir: str, config: ProjectConfig) -> None:
         sys.exit(1)
 
     # GitHub
-    push_choice = questionary.select("Push to GitHub?", choices=["public", "private", "skip"], default="skip").ask()
-    if push_choice in ("public", "private"):
-        console.print("[dim]Creating GitHub repo...[/dim]")
-        try:
-            subprocess.run(
-                [
-                    "gh",
-                    "repo",
-                    "create",
-                    f"{config.github_handle}/{config.project_name}",
-                    f"--{push_choice}",
-                    "--source=.",
-                    "--remote=origin",
-                    "--push",
-                ],
-                cwd=project_dir,
-                check=True,
-            )
-        except (subprocess.CalledProcessError, FileNotFoundError) as exc:
-            console.print(f"[yellow]GitHub repo creation failed: {exc}[/yellow]")
-            console.print("[dim]You can push manually later with: gh repo create[/dim]")
+    if not non_interactive:
+        push_choice = questionary.select(
+            "Push to GitHub?", choices=["public", "private", "skip"], default="skip"
+        ).ask()
+        if push_choice in ("public", "private"):
+            console.print("[dim]Creating GitHub repo...[/dim]")
+            try:
+                subprocess.run(
+                    [
+                        "gh",
+                        "repo",
+                        "create",
+                        f"{config.github_handle}/{config.project_name}",
+                        f"--{push_choice}",
+                        "--source=.",
+                        "--remote=origin",
+                        "--push",
+                    ],
+                    cwd=project_dir,
+                    check=True,
+                )
+            except (subprocess.CalledProcessError, FileNotFoundError) as exc:
+                console.print(f"[yellow]GitHub repo creation failed: {exc}[/yellow]")
+                console.print("[dim]You can push manually later with: gh repo create[/dim]")
 
     # Beads
     try:
@@ -110,12 +113,20 @@ def scaffold(dest_dir: str, config: ProjectConfig) -> None:
     console.print(f"[dim]Next: cd {config.project_name} && uv sync && uv run pre-commit install[/dim]")
 
 
-def run_new(project_name: str | None) -> None:
-    from spinup_py.prompts import run_prompts
+def run_new(project_name: str | None, non_interactive: bool = False) -> None:
+    if non_interactive:
+        if not project_name:
+            console.print("[red]--non-interactive requires a project name[/red]")
+            raise SystemExit(2)
+        from spinup_py.prompts import build_default_config
 
-    config = run_prompts(project_name)
+        config = build_default_config(project_name)
+    else:
+        from spinup_py.prompts import run_prompts
+
+        config = run_prompts(project_name)
     dest_dir = str(Path.cwd() / config.project_name)
-    scaffold(dest_dir, config)
+    scaffold(dest_dir, config, non_interactive=non_interactive)
 
 
 class _CommandError(Exception):
