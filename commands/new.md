@@ -10,14 +10,14 @@
 
 ## Instructions
 
-You are helping the user scaffold a new production-ready Python project using `create-py-project`.
+You are helping the user scaffold a new production-ready Python project using `spinup-py`.
 
 ### Step 1 — Load user defaults
 
-Check if `~/.create-py-projectrc.toml` exists and read it:
+Check if `~/.spinup-pyrc.toml` exists and read it (falling back to the legacy `~/.create-py-projectrc.toml` if present):
 
 ```bash
-cat ~/.create-py-projectrc.toml 2>/dev/null || echo "(no RC file yet)"
+cat ~/.spinup-pyrc.toml 2>/dev/null || cat ~/.create-py-projectrc.toml 2>/dev/null || echo "(no RC file yet)"
 ```
 
 Use any stored `author`, `email`, `github_handle`, `python_version` as defaults for the prompts below.
@@ -50,15 +50,15 @@ Show a summary table of the collected config and confirm with the user before pr
 Find the plugin root and determine the destination directory. Then write and run a temp scaffold script:
 
 ```bash
-# Find where create-py-project is installed
-PLUGIN_ROOT="$(python3 -c "import create_py_project, pathlib; print(pathlib.Path(create_py_project.__file__).parent.parent.parent)")"
+# Find where spinup-py is installed
+PLUGIN_ROOT="$(python3 -c "import spinup_py, pathlib; print(pathlib.Path(spinup_py.__file__).parent.parent.parent)")"
 
 # Write temp script
 cat > /tmp/cpp-scaffold.py << 'PYEOF'
 import sys
 sys.path.insert(0, "PLUGIN_SRC_PATH")
-from create_py_project.scaffold import scaffold
-from create_py_project.types import ProjectConfig
+from spinup_py.scaffold import scaffold
+from spinup_py.types import ProjectConfig
 
 config = ProjectConfig.create(
     project_name="PROJECT_NAME",
@@ -102,7 +102,7 @@ After scaffolding, run from the newly created project directory:
 
 ```bash
 cd PROJECT_NAME
-git init && git add -A && git commit -m "chore: initial scaffold from create-py-project"
+git init && git add -A && git commit -m "chore: initial scaffold from spinup-py"
 ```
 
 Ask the user: "Push to GitHub? (public / private / skip)"

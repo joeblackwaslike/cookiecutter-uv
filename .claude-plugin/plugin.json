@@ -1,5 +1,5 @@
 {
-    "name": "create-py-project",
+    "name": "spinup-py",
     "version": "0.1.0",
     "description": "Scaffold and maintain production-ready Python projects — the Python-ecosystem twin of create-ts-project",
     "author": {
@@ -7,8 +7,8 @@
         "email": "joeblackwaslike@gmail.com",
         "url": "https://github.com/joeblackwaslike"
     },
-    "homepage": "https://github.com/joeblackwaslike/create-py-project",
-    "repository": "https://github.com/joeblackwaslike/create-py-project",
+    "homepage": "https://github.com/joeblackwaslike/spinup-py",
+    "repository": "https://github.com/joeblackwaslike/spinup-py",
     "license": "MIT",
     "keywords": ["python", "scaffold", "cli", "template", "uv", "ruff", "mypy", "docusaurus"]
 }
