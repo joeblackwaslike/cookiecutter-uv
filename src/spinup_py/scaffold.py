@@ -7,7 +7,7 @@ import questionary
 from cookiecutter.main import cookiecutter  # type: ignore[import-untyped]
 from rich.console import Console
 
-from create_py_project.types import ProjectConfig
+from spinup_py.types import ProjectConfig
 
 console = Console()
 
@@ -111,7 +111,7 @@ def scaffold(dest_dir: str, config: ProjectConfig) -> None:
 
 
 def run_new(project_name: str | None) -> None:
-    from create_py_project.prompts import run_prompts
+    from spinup_py.prompts import run_prompts
 
     config = run_prompts(project_name)
     dest_dir = str(Path.cwd() / config.project_name)

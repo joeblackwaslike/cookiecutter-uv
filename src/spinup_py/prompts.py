@@ -6,7 +6,7 @@ import tomlkit
 from rich.console import Console
 from rich.table import Table
 
-from create_py_project.types import ProjectConfig, UserDefaults
+from spinup_py.types import ProjectConfig, UserDefaults
 
 RC_PATH = Path.home() / ".create-py-projectrc.toml"
 console = Console()

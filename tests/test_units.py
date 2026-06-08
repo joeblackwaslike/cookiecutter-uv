@@ -6,10 +6,10 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from create_py_project import scaffold as scaffold_mod
-from create_py_project.scaffold import _CommandError, scaffold
-from create_py_project.types import ProjectConfig, UserDefaults
-from create_py_project.update import _has_dev_dependency, _render_template
+from spinup_py import scaffold as scaffold_mod
+from spinup_py.scaffold import _CommandError, scaffold
+from spinup_py.types import ProjectConfig, UserDefaults
+from spinup_py.update import _has_dev_dependency, _render_template
 
 
 def _config(**overrides: object) -> ProjectConfig:

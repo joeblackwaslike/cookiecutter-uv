@@ -35,11 +35,11 @@ def main(
         raise typer.Exit()
 
     if update is not None:
-        from create_py_project.update import update_project
+        from spinup_py.update import update_project
 
         update_project(update or ".")
     elif project_name is not None:
-        from create_py_project.scaffold import run_new
+        from spinup_py.scaffold import run_new
 
         run_new(project_name)
     else:
@@ -51,7 +51,7 @@ def new_cmd(
     project_name: str | None = typer.Argument(None, help="Project name (kebab-case)"),
 ) -> None:
     """Scaffold a new Python project through guided prompts."""
-    from create_py_project.scaffold import run_new
+    from spinup_py.scaffold import run_new
 
     run_new(project_name)
 
@@ -61,6 +61,6 @@ def update_cmd(
     target_dir: str = typer.Argument(".", help="Path to the project to retrofit"),
 ) -> None:
     """Retrofit an existing Python project with create-py-project tooling."""
-    from create_py_project.update import update_project
+    from spinup_py.update import update_project
 
     update_project(target_dir)
