@@ -1,24 +1,28 @@
 import re
-from typing import Literal
+from typing import Any, Literal
 
-from pydantic import BaseModel, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, field_validator, model_validator
+
+PythonVersion = Literal["3.12", "3.11", "3.10"]
 
 
 class UserDefaults(BaseModel):
     author: str = ""
     email: str = ""
     github_handle: str = ""
-    python_version: str = "3.12"
+    python_version: PythonVersion = "3.12"
 
 
 class ProjectConfig(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
     project_name: str
     project_slug: str = ""
     description: str
     author: str
     email: str
     github_handle: str
-    python_version: Literal["3.12", "3.11", "3.10"] = "3.12"
+    python_version: PythonVersion = "3.12"
     include_github_actions: bool = True
     publish_to_pypi: bool = False
     deptry: bool = True
@@ -43,15 +47,51 @@ class ProjectConfig(BaseModel):
             raise ValueError(msg)
         return v
 
-    @model_validator(mode="after")
-    def _derive_slug(self) -> "ProjectConfig":
-        if not self.project_slug:
-            self.project_slug = self.project_name.lower().replace("-", "_")
-        return self
+    @model_validator(mode="before")
+    @classmethod
+    def _derive_slug(cls, data: Any) -> Any:
+        # Derive before construction so the slug stays consistent with
+        # project_name even though the model is frozen (no post-init mutation).
+        if isinstance(data, dict) and not data.get("project_slug"):
+            name = str(data.get("project_name", ""))
+            data["project_slug"] = name.lower().replace("-", "_")
+        return data
 
     @classmethod
-    def create(cls, *, project_name: str, **kwargs: object) -> "ProjectConfig":
-        return cls(project_name=project_name, **kwargs)  # type: ignore[arg-type]
+    def create(
+        cls,
+        *,
+        project_name: str,
+        description: str,
+        author: str,
+        email: str,
+        github_handle: str,
+        python_version: PythonVersion = "3.12",
+        include_github_actions: bool = True,
+        publish_to_pypi: bool = False,
+        deptry: bool = True,
+        include_docs: bool = False,
+        codecov: bool = False,
+        dockerfile: bool = False,
+        devcontainer: bool = True,
+        open_source_license: str = "MIT license",
+    ) -> "ProjectConfig":
+        return cls(
+            project_name=project_name,
+            description=description,
+            author=author,
+            email=email,
+            github_handle=github_handle,
+            python_version=python_version,
+            include_github_actions=include_github_actions,
+            publish_to_pypi=publish_to_pypi,
+            deptry=deptry,
+            include_docs=include_docs,
+            codecov=codecov,
+            dockerfile=dockerfile,
+            devcontainer=devcontainer,
+            open_source_license=open_source_license,  # type: ignore[arg-type]
+        )
 
     def to_cookiecutter_dict(self) -> dict[str, str]:
         def yn(v: bool) -> str:
