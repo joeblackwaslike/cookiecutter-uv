@@ -8,7 +8,7 @@ from pydantic import ValidationError
 
 from spinup_py import prompts as prompts_mod
 from spinup_py import scaffold as scaffold_mod
-from spinup_py.prompts import load_user_defaults, save_user_defaults
+from spinup_py.prompts import build_default_config, load_user_defaults, save_user_defaults
 from spinup_py.scaffold import _CommandError, scaffold
 from spinup_py.types import ProjectConfig, UserDefaults
 from spinup_py.update import _has_dev_dependency, _render_template
@@ -56,6 +56,19 @@ def test_slug_explicit_preserved() -> None:
         github_handle="gh",
     )
     assert cfg.project_slug == "custom_slug"
+
+
+def test_build_default_config_uses_defaults() -> None:
+    cfg = build_default_config("my-proj")
+    assert cfg.project_name == "my-proj"
+    assert cfg.project_slug == "my_proj"
+    assert cfg.open_source_license == "MIT license"
+    assert cfg.deptry is True
+    assert cfg.include_github_actions is True
+    assert cfg.devcontainer is True
+    assert cfg.include_docs is False
+    assert cfg.codecov is False
+    assert cfg.publish_to_pypi is False
 
 
 def test_config_is_frozen() -> None:

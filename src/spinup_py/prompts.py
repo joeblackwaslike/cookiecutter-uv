@@ -57,6 +57,27 @@ def save_user_defaults(d: UserDefaults) -> None:
         console.print(f"[yellow]Warning: could not save defaults to {RC_PATH}[/yellow]")
 
 
+def build_default_config(project_name: str) -> ProjectConfig:
+    """Build a ProjectConfig from saved/built-in defaults with no prompts."""
+    defaults = load_user_defaults()
+    return ProjectConfig.create(
+        project_name=project_name,
+        description="",
+        author=defaults.author,
+        email=defaults.email,
+        github_handle=defaults.github_handle,
+        python_version=defaults.python_version,
+        include_github_actions=True,
+        devcontainer=True,
+        include_docs=False,
+        codecov=False,
+        dockerfile=False,
+        deptry=True,
+        publish_to_pypi=False,
+        open_source_license="MIT license",
+    )
+
+
 def run_prompts(project_name_arg: str | None = None) -> ProjectConfig:
     console.rule("[bold blue]spinup-py[/bold blue]")
     defaults = load_user_defaults()
