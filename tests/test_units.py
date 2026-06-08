@@ -252,6 +252,22 @@ def test_scaffold_non_interactive_skips_push_prompt(tmp_path: Path, monkeypatch:
     assert (project_dir / ".serena" / "project.yml").exists()
 
 
+def test_cli_non_interactive_flag_routes(monkeypatch: pytest.MonkeyPatch) -> None:
+    from typer.testing import CliRunner
+
+    from spinup_py.cli import app
+
+    called: dict[str, object] = {}
+    monkeypatch.setattr(
+        scaffold_mod,
+        "run_new",
+        lambda name, non_interactive=False: called.update(name=name, ni=non_interactive),
+    )
+    result = CliRunner().invoke(app, ["my-proj", "--non-interactive"])
+    assert result.exit_code == 0
+    assert called == {"name": "my-proj", "ni": True}
+
+
 def test_scaffold_run_raises_on_nonzero(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     # _run should raise _CommandError when the subprocess exits non-zero.
     def fake_subprocess_run(*_args: object, **_kwargs: object) -> subprocess.CompletedProcess[str]:
