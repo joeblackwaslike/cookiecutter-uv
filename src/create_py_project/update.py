@@ -9,6 +9,7 @@ import questionary
 import tomlkit
 from rich.console import Console
 from rich.table import Table
+from tomlkit.items import Array
 
 console = Console()
 
@@ -168,15 +169,17 @@ def _copy_dir(src_rel: str, target: Path, project_name: str) -> None:
     if not src.exists():
         console.print(f"[yellow]Template source not found: {src}[/yellow]")
         return
-    if (
-        dst.exists()
-        and not questionary.confirm(
+    if dst.exists():
+        answer = questionary.confirm(
             f"Update existing {dst.name}/ directory? (template files overwritten, your other files kept)",
             default=False,
         ).ask()
-    ):
-        console.print(f"[yellow]Skipping {src_rel}[/yellow]")
-        return
+        if answer is None:  # Ctrl+C / ESC — treat as an explicit cancellation.
+            console.print("[yellow]Cancelled.[/yellow]")
+            raise SystemExit(1)
+        if not answer:
+            console.print(f"[yellow]Skipping {src_rel}[/yellow]")
+            return
     # Merge into the destination rather than deleting it, so files the user
     # added alongside the template (e.g. extra docs pages) are preserved.
     shutil.copytree(src, dst, dirs_exist_ok=True)
@@ -213,6 +216,21 @@ def _substitute_vars(directory: Path, project_name: str) -> None:
                 console.print(f"[yellow]Warning: could not update {f}: {exc}[/yellow]")
 
 
+def _has_dev_dependency(pyproject_path: Path, name: str) -> bool:
+    """Return True if ``name`` is listed in ``dependency-groups.dev``.
+
+    Matches by package name (start of the requirement string) so it is not
+    fooled by the name appearing in a comment or an unrelated section.
+    """
+    try:
+        doc = tomlkit.parse(pyproject_path.read_text())
+        dev_deps = doc["dependency-groups"]["dev"]
+    except KeyError:
+        return False
+    pattern = re.compile(rf"^{re.escape(name)}(?:[<>=~!\[;\s]|$)", re.IGNORECASE)
+    return any(pattern.match(str(dep).strip()) for dep in dev_deps)
+
+
 def _add_deptry(pyproject_path: Path) -> None:
     doc = tomlkit.parse(pyproject_path.read_text())
     try:
@@ -220,12 +238,13 @@ def _add_deptry(pyproject_path: Path) -> None:
     except KeyError:
         _append_toml(pyproject_path, '[dependency-groups]\ndev = ["deptry>=0.23.0"]\n')
         return
-    try:
-        dev_deps = dep_groups["dev"]
-        if not any("deptry" in str(dep) for dep in dev_deps):
-            dev_deps.append("deptry>=0.23.0")
-    except KeyError:
+    dev_deps = dep_groups.get("dev")
+    if not isinstance(dev_deps, Array):
+        # Missing, scalar, or inline-table `dev` — replace with a proper array
+        # rather than calling .append() on a non-array and crashing.
         dep_groups["dev"] = ["deptry>=0.23.0"]
+    elif not any("deptry" in str(dep) for dep in dev_deps):
+        dev_deps.append("deptry>=0.23.0")
     pyproject_path.write_text(tomlkit.dumps(doc))
 
 
@@ -360,7 +379,7 @@ def detect_available_updates(target: Path) -> list[UpdateOption]:
             )
         )
 
-    if pyproject.exists() and "deptry" not in pyproject.read_text():
+    if pyproject.exists() and not _has_dev_dependency(pyproject, "deptry"):
         options.append(
             UpdateOption(
                 value="deptry",
