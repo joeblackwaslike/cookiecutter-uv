@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Installs the create-py-project CLI into the session environment.
+# Installs the spinup-py CLI into the session environment.
 # Called by the Claude Code plugin SessionStart hook.
 
-if command -v create-py-project &>/dev/null; then
+if command -v spinup-py &>/dev/null; then
   echo '{"continue": true, "suppressOutput": true, "status": "ready"}'
   exit 0
 fi

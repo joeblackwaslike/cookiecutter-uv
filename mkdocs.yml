@@ -1,10 +1,10 @@
-site_name: create-py-project
-repo_url: https://github.com/joeblackwaslike/create-py-project
-site_url: https://joeblackwaslike.github.io/create-py-project
+site_name: spinup-py
+repo_url: https://github.com/joeblackwaslike/spinup-py
+site_url: https://joeblackwaslike.github.io/spinup-py
 site_description: A cookiecutter template for Python projects that use uv for its dependency management
 site_author: Joe Black
 edit_uri: edit/main/docs/
-repo_name: joeblackwaslike/create-py-project
+repo_name: joeblackwaslike/spinup-py
 copyright: Maintained by <a href="https://joeblackwaslike.com">Florian</a>.
 
 nav:
@@ -54,9 +54,9 @@ theme:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/joeblackwaslike/create-py-project
+      link: https://github.com/joeblackwaslike/spinup-py
     - icon: fontawesome/brands/python
-      link: https://pypi.org/project/create-py-project/
+      link: https://pypi.org/project/spinup-py/
 markdown_extensions:
   - toc:
       permalink: true
