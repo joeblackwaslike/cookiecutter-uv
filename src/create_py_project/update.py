@@ -168,12 +168,18 @@ def _copy_dir(src_rel: str, target: Path, project_name: str) -> None:
     if not src.exists():
         console.print(f"[yellow]Template source not found: {src}[/yellow]")
         return
-    if dst.exists():
-        if not questionary.confirm(f"Replace existing {dst.name}/ directory?", default=False).ask():
-            console.print(f"[yellow]Skipping {src_rel}[/yellow]")
-            return
-        shutil.rmtree(dst)
-    shutil.copytree(src, dst)
+    if (
+        dst.exists()
+        and not questionary.confirm(
+            f"Update existing {dst.name}/ directory? (template files overwritten, your other files kept)",
+            default=False,
+        ).ask()
+    ):
+        console.print(f"[yellow]Skipping {src_rel}[/yellow]")
+        return
+    # Merge into the destination rather than deleting it, so files the user
+    # added alongside the template (e.g. extra docs pages) are preserved.
+    shutil.copytree(src, dst, dirs_exist_ok=True)
     _substitute_vars(dst, project_name)
 
 
@@ -229,6 +235,7 @@ def _run_beads(target: Path) -> None:
             ["bd", "init", "--skip-agents", "--non-interactive"],
             cwd=target,
             capture_output=True,
+            check=False,
         )
         if result.returncode != 0:
             console.print("[yellow]bd init failed — check beads CLI installation[/yellow]")

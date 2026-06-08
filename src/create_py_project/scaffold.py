@@ -24,7 +24,20 @@ def _template_dir() -> str:
 
 
 def scaffold(dest_dir: str, config: ProjectConfig) -> None:
+    """Scaffold a new project from the template.
+
+    The project is always created at ``<parent of dest_dir>/<config.project_name>``:
+    only the *parent* of ``dest_dir`` is used as cookiecutter's output directory,
+    and the final directory name comes from ``config.project_name``. Callers must
+    therefore pass a ``dest_dir`` whose basename equals ``config.project_name``
+    (``run_new`` does this); otherwise the basename would be silently ignored.
+    """
     dest = Path(dest_dir).resolve()
+    if dest.name != config.project_name:
+        console.print(
+            f"[red]dest_dir basename ({dest.name!r}) must match " f"project_name ({config.project_name!r}).[/red]"
+        )
+        raise SystemExit(1)
     template_dir = _template_dir()
 
     console.print(f"\n[bold]Scaffolding [cyan]{config.project_name}[/cyan]...[/bold]")
