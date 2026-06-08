@@ -2,7 +2,21 @@ import os
 from contextlib import contextmanager
 from pathlib import Path
 
+import tomlkit
 import yaml
+
+
+def is_valid_toml(path: str | Path) -> bool:
+    path = Path(path)
+    if not path.is_file():
+        print(f"File does not exist: {path}")
+        return False
+    try:
+        tomlkit.parse(path.read_text())
+    except (tomlkit.exceptions.TOMLKitError, OSError) as e:
+        print(f"Invalid TOML file: {path} - Error: {e}")
+        return False
+    return True
 
 
 def is_valid_yaml(path: str | Path):
