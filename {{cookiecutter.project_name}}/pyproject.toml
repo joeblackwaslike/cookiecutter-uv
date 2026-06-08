@@ -15,7 +15,6 @@ classifiers = [
 ]
 dependencies = [
     "anyio~=4.11.0",
-    "importlib-metadata~=8.7.0; python_version < '3.10'",
 ]
 
 [project.urls]
@@ -26,21 +25,16 @@ Documentation = "https://{{cookiecutter.github_handle}}.github.io/{{cookiecutter
 
 [dependency-groups]
 dev = [
-    {% if cookiecutter.deptry == 'y' %}
+{%- if cookiecutter.deptry == "y" %}
     "deptry~=0.23.1",
     "ipython~=9.6.0",
-    {% endif %}
-    {% if cookiecutter.mkdocs == 'y' %}
-    "mkdocs~=1.6.1",
-    "mkdocs-material~=9.6.21",
-    "mkdocstrings[python]~=0.30.1",
-    {% endif %}
+{%- endif %}
     "mypy~=1.18.2",
     "pre-commit~=4.3.0",
-    {% if cookiecutter.codecov == 'y' %}
+{%- if cookiecutter.codecov == "y" %}
     "coverage[toml]~=7.10.7",
     "pytest-cov~=7.0.0",
-    {% endif %}
+{%- endif %}
     "pytest~=8.4.2",
     "pytest-asyncio~=1.2.0",
     "pytest-mock~=3.15.1",
@@ -178,7 +172,7 @@ quote-style = "double"
 indent-style = "space"
 docstring-code-format = false
 
-{% if cookiecutter.codecov == "y"-%}
+{%- if cookiecutter.codecov == "y" %}
 [tool.coverage.run]
 # Coverage configuration: https://coverage.readthedocs.io/
 branch = true
@@ -186,4 +180,4 @@ source = ["src"]
 
 [tool.coverage.report]
 skip_empty = true
-{% endif %}
+{%- endif %}

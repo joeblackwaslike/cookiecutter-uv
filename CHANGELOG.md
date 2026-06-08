@@ -13,21 +13,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-
 ## [1.1.0] - 2025-01-18
 
 ### Added
+
 - Added support for src layout
 - Added docker-compose.yaml file
 
 ### Changed
+
 - Updated the default ruff version to 0.9.2
 - Updated the default deptry version to 0.22.0
-
 
 ## [1.0.1] - 2025-01-09
 
 ### Added
+
 - Added default settings to devcontainer
 - Added github issue and pull request templates
 - Added `wemake-python-styleguide` checks to the linter checks and pre-commit, pyproject.toml updated to ensure alignment with ruff, setup.cfg added to deal with flake8 checks.
@@ -38,7 +39,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a py.typed to inner package to allow for type checking.
 
 ### Changed
+
 - Changed the default Python version to 3.11.
 - Made full use of .editorconfig template
 - Added alternative bootstrap commands to the create a new repo section.
-- Made pyproject.toml the source of truth for version and stubbed __version__ in the __init__.py file to reflect this.
+- Made pyproject.toml the source of truth for version and stubbed **version** in the **init**.py file to reflect this.

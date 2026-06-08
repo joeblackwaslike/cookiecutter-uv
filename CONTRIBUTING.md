@@ -9,7 +9,7 @@ You can contribute in many ways:
 
 ## Report Bugs
 
-Report bugs at <https://github.com/joeblackwaslike/cookiecutter-uv/issues
+Report bugs at <https://github.com/joeblackwaslike/create-py-project/issues
 
 If you are reporting a bug, please include:
 
@@ -33,7 +33,7 @@ Cookiecutter PyPackage could always use more documentation, whether as part of t
 
 ## Submit Feedback
 
-The best way to send feedback is to file an issue at <https://github.com/joeblackwaslike/cookiecutter-uv/issues.
+The best way to send feedback is to file an issue at <https://github.com/joeblackwaslike/create-py-project/issues.
 
 If you are proposing a new feature:
 
@@ -43,23 +43,23 @@ If you are proposing a new feature:
 
 # Get Started!
 
-Ready to contribute? Here\'s how to set up `cookiecutter-uv` for local development.
+Ready to contribute? Here\'s how to set up `create-py-project` for local development.
 Please note this documentation assumes you already have `uv` and `git` installed and ready to go.
 
-1. Fork the `cookiecutter-uv` repo on GitHub.
+1. Fork the `create-py-project` repo on GitHub.
 
 2. Clone your fork locally:
 
 ```bash
-cd <directory_in_which_repo_should_be_created
-git clone git@github.com:YOUR_NAME/cookiecutter-uv.git
+cd <directory_in_which_repo_should_be_created>
+git clone git@github.com:YOUR_NAME/create-py-project.git
 ```
 
 3. Now we need to install the environment.
    Navigate into the project directory:
 
 ```bash
-cd cookiecutter-uv
+cd create-py-project
 ```
 
 Then, install and activate the environment with:

@@ -54,19 +54,37 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: {% raw %}${{ secrets.PYPI_TOKEN }}{% endraw %}
 {% endif %}
-{%- if cookiecutter.mkdocs == "y" %}
+{%- if cookiecutter.include_docs == "y" %}
   deploy-docs:
     {%- if cookiecutter.publish_to_pypi == "y" %}
     needs: publish
     {%- endif %}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: {% raw %}${{ steps.deployment.outputs.page_url }}{% endraw %}
     steps:
       - name: Check out
         uses: actions/checkout@v4
 
-      - name: Set up the environment
-        uses: ./.github/actions/setup-python-env
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-      - name: Deploy documentation
-        run: uv run mkdocs gh-deploy --force
+      - name: Build documentation
+        run: cd docs && npm ci && npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/build
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 {% endif %}

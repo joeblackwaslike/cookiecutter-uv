@@ -17,7 +17,7 @@ On your local machine, navigate to the directory in which you want to
 create a project directory, and run the following command:
 
 ```bash
-uvx cookiecutter https://github.com/joeblackwaslike/cookiecutter-uv.git
+uvx create-py-project my-project
 ```
 
 For an explanation of the prompt arguments, see

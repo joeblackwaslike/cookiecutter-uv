@@ -54,7 +54,7 @@ jobs:
         uses: codecov/codecov-action@v4
         if: {% raw %}${{ matrix.python-version == '3.11' }}{% endraw %}
 {%- endif %}
-{%- if cookiecutter.mkdocs == "y" %}
+{%- if cookiecutter.include_docs == "y" %}
 
   check-docs:
     runs-on: ubuntu-latest
@@ -62,9 +62,11 @@ jobs:
       - name: Check out
         uses: actions/checkout@v4
 
-      - name: Set up the environment
-        uses: ./.github/actions/setup-python-env
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
       - name: Check if documentation can be built
-        run: uv run mkdocs build -s
+        run: cd docs && npm ci && npm run build
 {%- endif %}

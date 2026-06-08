@@ -1,0 +1,479 @@
+import re
+import shutil
+import subprocess
+from collections.abc import Callable
+from dataclasses import dataclass
+from pathlib import Path
+
+import questionary
+import tomlkit
+from rich.console import Console
+from rich.table import Table
+from tomlkit.items import Array
+
+console = Console()
+
+# Template source: {{cookiecutter.project_name}}/ relative to the project root
+_TEMPLATE_ROOT = Path(__file__).parent.parent.parent / "{{cookiecutter.project_name}}"
+
+# ── TOML blocks injected into pyproject.toml ─────────────────────────────────
+
+_RUFF_TOML = """\
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+fix = true
+
+[tool.ruff.lint]
+select = [
+    "A",    # flake8-builtins
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "C90",  # maccabe
+    "COM",  # flake8-commas
+    "D",    # pydocstyle
+    "DTZ",  # flake8-datetimez
+    "E",    # pycodestyle
+    "ERA",  # flake8-eradicate
+    "EXE",  # flake8-executable
+    "F",    # pyflakes
+    "FBT",  # flake8-boolean-trap
+    "FLY",  # pyflint
+    "FURB", # refurb
+    "G",    # flake8-logging-format
+    "I",    # isort
+    "ICN",  # flake8-import-conventions
+    "ISC",  # flake8-implicit-str-concat
+    "LOG",  # flake8-logging
+    "N",    # pep8-naming
+    "PERF", # perflint
+    "PIE",  # flake8-pie
+    "PL",   # pylint
+    "PT",   # flake8-pytest-style
+    "PTH",  # flake8-use-pathlib
+    "Q",    # flake8-quotes
+    "RET",  # flake8-return
+    "RSE",  # flake8-raise
+    "RUF",  # ruff
+    "S",    # flake8-bandit
+    "SIM",  # flake8-simpify
+    "SLF",  # flake8-self
+    "SLOT", # flake8-slots
+    "T100", # flake8-debugger
+    "TRY",  # tryceratops
+    "UP",   # pyupgrade
+    "W",    # pycodestyle
+    "YTT",  # flake8-2020
+]
+ignore = [
+    "A005", "COM812", "D100", "D104", "D106", "D203", "D212", "D401",
+    "D404", "D405", "E501", "E731", "ISC001", "ISC003", "PLR09",
+    "PLR2004", "PLR6301", "TRY003",
+]
+external = ["WPS"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "double"
+
+[tool.ruff.lint.mccabe]
+max-complexity = 24
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "F403"]
+"tests/*.py" = ["S101", "S105", "S404", "S603", "S607", "D103"]
+
+[tool.ruff.format]
+preview = true
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = false
+"""
+
+_MYPY_TOML = """\
+[tool.mypy]
+files = ["src"]
+plugins = ["pydantic.mypy"]
+strict = true
+disallow_untyped_defs = true
+disallow_any_unimported = true
+no_implicit_optional = true
+check_untyped_defs = true
+warn_return_any = true
+warn_unused_ignores = true
+show_error_codes = true
+warn_unreachable = true
+"""
+
+_PYTEST_TOML = """\
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+"""
+
+_COVERAGE_TOML = """\
+[tool.coverage.run]
+branch = true
+source = ["src"]
+
+[tool.coverage.report]
+skip_empty = true
+"""
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
+
+@dataclass
+class UpdateOption:
+    value: str
+    label: str
+    hint: str
+    apply: Callable[[Path], None]
+
+
+def _get_project_name(target: Path) -> str:
+    pyproject = target / "pyproject.toml"
+    if pyproject.exists():
+        try:
+            doc = tomlkit.parse(pyproject.read_text())
+            return str(doc["project"]["name"])
+        except KeyError:
+            console.print(f"[dim]No [project].name in {pyproject}; falling back to directory name[/dim]")
+        except (tomlkit.exceptions.TOMLKitError, OSError) as exc:
+            console.print(f"[yellow]Warning: could not read project name from {pyproject}: {exc}[/yellow]")
+    return target.name
+
+
+def _has_toml_section(pyproject_path: Path, *keys: str) -> bool:
+    if not pyproject_path.exists():
+        return False
+    try:
+        node: object = tomlkit.parse(pyproject_path.read_text())
+        for key in keys:
+            node = node[key]  # type: ignore[index]
+        return True
+    except KeyError:
+        return False
+
+
+def _append_toml(pyproject_path: Path, content: str) -> None:
+    text = pyproject_path.read_text()
+    pyproject_path.write_text(text.rstrip() + "\n\n" + content.strip() + "\n")
+
+
+def _copy_dir(src_rel: str, target: Path, project_name: str) -> None:
+    src = _TEMPLATE_ROOT / src_rel
+    dst = target / src_rel
+    if not src.exists():
+        console.print(f"[yellow]Template source not found: {src}[/yellow]")
+        return
+    if dst.exists():
+        answer = questionary.confirm(
+            f"Update existing {dst.name}/ directory? (template files overwritten, your other files kept)",
+            default=False,
+        ).ask()
+        if answer is None:  # Ctrl+C / ESC — treat as an explicit cancellation.
+            console.print("[yellow]Cancelled.[/yellow]")
+            raise SystemExit(1)
+        if not answer:
+            console.print(f"[yellow]Skipping {src_rel}[/yellow]")
+            return
+    # Merge into the destination rather than deleting it, so files the user
+    # added alongside the template (e.g. extra docs pages) are preserved.
+    shutil.copytree(src, dst, dirs_exist_ok=True)
+    _substitute_vars(dst, project_name)
+
+
+def _copy_file(src_rel: str, target: Path, project_name: str) -> None:
+    src = _TEMPLATE_ROOT / src_rel
+    dst = target / src_rel
+    if not src.exists():
+        console.print(f"[yellow]Template source not found: {src}[/yellow]")
+        return
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    text = _render_template(src.read_text(encoding="utf-8"), project_name)
+    dst.write_text(text, encoding="utf-8")
+
+
+def _render_template(text: str, project_name: str) -> str:
+    text = text.replace("{{cookiecutter.project_name}}", project_name)
+    text = text.replace("{{cookiecutter.project_slug}}", project_name.replace("-", "_"))
+    # Strip remaining unresolved cookiecutter expressions
+    text = re.sub(r"\{\{cookiecutter\.[^}]+\}\}", "", text)
+    return text
+
+
+def _substitute_vars(directory: Path, project_name: str) -> None:
+    for f in directory.rglob("*"):
+        if f.is_file():
+            try:
+                f.write_text(_render_template(f.read_text(encoding="utf-8"), project_name))
+            except UnicodeDecodeError:
+                # Binary file (image, compiled artifact) — no template tokens to
+                # substitute. Logged so skipped files are traceable.
+                console.print(f"[dim]Skipping non-text file: {f}[/dim]")
+            except PermissionError as exc:
+                console.print(f"[yellow]Warning: could not update {f}: {exc}[/yellow]")
+
+
+def _has_dev_dependency(pyproject_path: Path, name: str) -> bool:
+    """Return True if ``name`` is listed in ``dependency-groups.dev``.
+
+    Matches by package name (start of the requirement string) so it is not
+    fooled by the name appearing in a comment or an unrelated section.
+    """
+    try:
+        doc = tomlkit.parse(pyproject_path.read_text())
+        dev_deps = doc["dependency-groups"]["dev"]
+    except KeyError:
+        return False
+    pattern = re.compile(rf"^{re.escape(name)}(?:[<>=~!\[;\s]|$)", re.IGNORECASE)
+    return any(pattern.match(str(dep).strip()) for dep in dev_deps)
+
+
+def _add_deptry(pyproject_path: Path) -> None:
+    doc = tomlkit.parse(pyproject_path.read_text())
+    try:
+        dep_groups = doc["dependency-groups"]
+    except KeyError:
+        _append_toml(pyproject_path, '[dependency-groups]\ndev = ["deptry>=0.23.0"]\n')
+        return
+    dev_deps = dep_groups.get("dev")
+    if not isinstance(dev_deps, Array):
+        # Missing, scalar, or inline-table `dev` — replace with a proper array
+        # rather than calling .append() on a non-array and crashing.
+        dep_groups["dev"] = ["deptry>=0.23.0"]
+    elif not any("deptry" in str(dep) for dep in dev_deps):
+        dev_deps.append("deptry>=0.23.0")
+    pyproject_path.write_text(tomlkit.dumps(doc))
+
+
+def _run_beads(target: Path) -> None:
+    try:
+        result = subprocess.run(
+            ["bd", "init", "--skip-agents", "--non-interactive"],
+            cwd=target,
+            capture_output=True,
+            check=False,
+        )
+        if result.returncode != 0:
+            console.print("[yellow]bd init failed — check beads CLI installation[/yellow]")
+    except OSError:
+        console.print("[yellow]bd not found or not executable — install the beads CLI to use this feature[/yellow]")
+
+
+def _init_serena(target: Path, project_name: str) -> None:
+    serena_dir = target / ".serena"
+    serena_dir.mkdir(exist_ok=True)
+    (serena_dir / "project.yml").write_text(f"project_name: {project_name}\nlanguage: python\n")
+
+
+# ── Detection ─────────────────────────────────────────────────────────────────
+
+
+def _write_file(path: Path, content: str) -> None:
+    path.write_text(content)
+
+
+def detect_available_updates(target: Path) -> list[UpdateOption]:
+    project_name = _get_project_name(target)
+    pyproject = target / "pyproject.toml"
+    options: list[UpdateOption] = []
+
+    if not (target / ".devcontainer").exists():
+        options.append(
+            UpdateOption(
+                value="devcontainer",
+                label="Add .devcontainer/",
+                hint="Full Claude Code dev environment (custom image, mounts, API keys)",
+                apply=lambda t: _copy_dir(".devcontainer", t, project_name),
+            )
+        )
+
+    if not (target / "AGENTS.md").exists():
+        options.append(
+            UpdateOption(
+                value="agents_md",
+                label="Add AGENTS.md",
+                hint="Agent instruction file (Codex, Gemini, Cursor, Copilot)",
+                apply=lambda t: _copy_file("AGENTS.md", t, project_name),
+            )
+        )
+
+    if not (target / "CLAUDE.md").exists():
+        options.append(
+            UpdateOption(
+                value="claude_md",
+                label="Add CLAUDE.md",
+                hint="Single-line @AGENTS.md import for Claude Code",
+                apply=lambda t: _write_file(t / "CLAUDE.md", "@AGENTS.md\n"),
+            )
+        )
+
+    if not (target / ".github" / "workflows").exists():
+        options.append(
+            UpdateOption(
+                value="github_actions",
+                label="Add GitHub Actions CI (.github/workflows/)",
+                hint="Lint, typecheck, test, build",
+                apply=lambda t: _copy_dir(".github", t, project_name),
+            )
+        )
+    elif not (target / ".github" / "workflows" / "on-release-main.yml").exists():
+        options.append(
+            UpdateOption(
+                value="pypi_publish",
+                label="Add PyPI publish workflow",
+                hint=".github/workflows/on-release-main.yml",
+                apply=lambda t: _copy_file(".github/workflows/on-release-main.yml", t, project_name),
+            )
+        )
+
+    if pyproject.exists() and not _has_toml_section(pyproject, "tool", "ruff"):
+        options.append(
+            UpdateOption(
+                value="ruff",
+                label="Add ruff config to pyproject.toml",
+                hint="Full linting ruleset with WPS support, google docstrings",
+                apply=lambda t: _append_toml(t / "pyproject.toml", _RUFF_TOML),
+            )
+        )
+
+    if pyproject.exists() and not _has_toml_section(pyproject, "tool", "mypy"):
+        options.append(
+            UpdateOption(
+                value="mypy",
+                label="Add mypy config to pyproject.toml",
+                hint="Strict typing with pydantic plugin",
+                apply=lambda t: _append_toml(t / "pyproject.toml", _MYPY_TOML),
+            )
+        )
+
+    if pyproject.exists() and not _has_toml_section(pyproject, "tool", "pytest"):
+        options.append(
+            UpdateOption(
+                value="pytest",
+                label="Add pytest config to pyproject.toml",
+                hint='pythonpath = ["src"], testpaths = ["tests"]',
+                apply=lambda t: _append_toml(t / "pyproject.toml", _PYTEST_TOML),
+            )
+        )
+
+    if pyproject.exists() and not _has_toml_section(pyproject, "tool", "coverage"):
+        options.append(
+            UpdateOption(
+                value="coverage",
+                label="Add coverage config to pyproject.toml",
+                hint="Branch coverage, src source",
+                apply=lambda t: _append_toml(t / "pyproject.toml", _COVERAGE_TOML),
+            )
+        )
+
+    if not (target / ".pre-commit-config.yaml").exists():
+        options.append(
+            UpdateOption(
+                value="pre_commit",
+                label="Add .pre-commit-config.yaml",
+                hint="ruff + WPS + prettier hooks",
+                apply=lambda t: _copy_file(".pre-commit-config.yaml", t, project_name),
+            )
+        )
+
+    if pyproject.exists() and not _has_dev_dependency(pyproject, "deptry"):
+        options.append(
+            UpdateOption(
+                value="deptry",
+                label="Add deptry to dev dependencies",
+                hint="Detects unused / missing / misplaced dependencies",
+                apply=lambda t: _add_deptry(t / "pyproject.toml"),
+            )
+        )
+
+    if not (target / "docs").exists():
+        options.append(
+            UpdateOption(
+                value="docs",
+                label="Add Docusaurus docs site (docs/)",
+                hint="Copy Docusaurus scaffold from template",
+                apply=lambda t: _copy_dir("docs", t, project_name),
+            )
+        )
+
+    if not (target / "Dockerfile").exists():
+        options.append(
+            UpdateOption(
+                value="dockerfile",
+                label="Add Dockerfile",
+                hint="Multi-stage Python build",
+                apply=lambda t: _copy_file("Dockerfile", t, project_name),
+            )
+        )
+
+    if not (target / ".beads").exists():
+        options.append(
+            UpdateOption(
+                value="beads",
+                label="Initialize Beads task manager",
+                hint="Runs: bd init --skip-agents",
+                apply=lambda t: _run_beads(t),
+            )
+        )
+
+    if not (target / ".serena" / "project.yml").exists():
+        options.append(
+            UpdateOption(
+                value="serena",
+                label="Initialize Serena project config",
+                hint="Creates .serena/project.yml",
+                apply=lambda t: _init_serena(t, project_name),
+            )
+        )
+
+    return options
+
+
+# ── Entry point ───────────────────────────────────────────────────────────────
+
+
+def update_project(target_dir: str) -> None:
+    target = Path(target_dir).resolve()
+    if not target.exists():
+        console.print(f"[red]Directory not found: {target}[/red]")
+        raise SystemExit(1)
+
+    console.rule("[bold blue]create-py-project update[/bold blue]")
+    console.print(f"[dim]Target: {target}[/dim]\n")
+
+    available = detect_available_updates(target)
+    if not available:
+        console.print("[green]✓ Project is already up to date![/green]")
+        return
+
+    choices = [questionary.Choice(f"{o.label}  [dim]{o.hint}[/dim]", value=o.value, checked=True) for o in available]
+    selected_values: list[str] = questionary.checkbox("Select updates to apply:", choices=choices).ask()
+
+    if not selected_values:
+        console.print("[yellow]No updates selected.[/yellow]")
+        return
+
+    selected = [o for o in available if o.value in selected_values]
+
+    table = Table(show_header=False, box=None, padding=(0, 2))
+    table.add_column(style="bold")
+    table.add_column(style="dim")
+
+    for opt in selected:
+        try:
+            opt.apply(target)
+            table.add_row("[green]✓[/green]", opt.label)
+        # Only swallow expected runtime failures (file IO, TOML, subprocess);
+        # programming errors (AttributeError, TypeError, ...) propagate so a
+        # broken apply() shows a traceback instead of a silent "failed" row.
+        except (OSError, tomlkit.exceptions.TOMLKitError, subprocess.SubprocessError) as exc:
+            table.add_row("[red]✗[/red]", f"{opt.label} — {exc}")
+
+    console.print()
+    console.print(table)
+    console.print()

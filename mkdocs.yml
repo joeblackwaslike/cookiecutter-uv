@@ -1,10 +1,10 @@
-site_name: cookiecutter-uv
-repo_url: https://github.com/joeblackwaslike/cookiecutter-uv
-site_url: https://joeblackwaslike.github.io/cookiecutter-uv
+site_name: create-py-project
+repo_url: https://github.com/joeblackwaslike/create-py-project
+site_url: https://joeblackwaslike.github.io/create-py-project
 site_description: A cookiecutter template for Python projects that use uv for its dependency management
 site_author: Joe Black
 edit_uri: edit/main/docs/
-repo_name: joeblackwaslike/cookiecutter-uv
+repo_name: joeblackwaslike/create-py-project
 copyright: Maintained by <a href="https://joeblackwaslike.com">Florian</a>.
 
 nav:
@@ -54,9 +54,9 @@ theme:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/joeblackwaslike/cookiecutter-uv
+      link: https://github.com/joeblackwaslike/create-py-project
     - icon: fontawesome/brands/python
-      link: https://pypi.org/project/cookiecutter-uv/
+      link: https://pypi.org/project/create-py-project/
 markdown_extensions:
   - toc:
       permalink: true

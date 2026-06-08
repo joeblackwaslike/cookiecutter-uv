@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-from __future__ import annotations
-
 import os
 import shutil
 
@@ -20,15 +18,18 @@ def move_file(filepath: str, target: str) -> None:
 
 
 if __name__ == "__main__":
+    # NOTE: optional dependencies (deptry/ipython, coverage/pytest-cov) and the
+    # [tool.coverage.*] sections are gated directly in pyproject.toml with Jinja
+    # conditionals, so there is nothing to strip here — the single source of
+    # truth for "is this dep included?" lives in the template itself.
     if "{{cookiecutter.include_github_actions}}" != "y":
         remove_dir(".github")
     else:
-        if "{{cookiecutter.mkdocs}}" != "y" and "{{cookiecutter.publish_to_pypi}}" == "n":
+        if "{{cookiecutter.include_docs}}" != "y" and "{{cookiecutter.publish_to_pypi}}" == "n":
             remove_file(".github/workflows/on-release-main.yml")
 
-    if "{{cookiecutter.mkdocs}}" != "y":
+    if "{{cookiecutter.include_docs}}" != "y":
         remove_dir("docs")
-        remove_file("mkdocs.yml")
 
     if "{{cookiecutter.dockerfile}}" != "y":
         remove_file("Dockerfile")
