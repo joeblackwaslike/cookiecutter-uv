@@ -20,7 +20,7 @@ are guard-blocked on PyPI. The chosen pair is **`spinup-py`** (PyPI, this repo) 
 and npm with no separator-collapsed neighbor that would trip the guard.
 
 The intended outcome: rebrand this tool to `spinup-py`, give it real CI gates + a
-smoke test of the *published artifact*, and a release-please → Trusted Publishing
+smoke test of the _published artifact_, and a release-please → Trusted Publishing
 pipeline so a merged release PR ships to PyPI.
 
 ## Goals
@@ -41,16 +41,16 @@ pipeline so a merged release PR ships to PyPI.
 
 ## Locked decisions
 
-| Decision | Choice |
-|---|---|
-| PyPI/npm name pair | `spinup-py` / `spinup-ts` |
-| PyPI auth | **Trusted Publishing (OIDC)** — no stored token |
-| Smoke test | Build wheel → install clean → run binary **+ non-interactive scaffold**, assert tree |
-| Promotion gate | **Merge the release-please PR ⇒ publish** (CI green required to merge) |
-| Import package | Rename `create_py_project` → `spinup_py` |
-| GitHub repo | Rename `create-py-project` → `spinup-py` |
-| `--non-interactive` | Defaults-only |
-| Docs deploy | Folded into the release-please workflow (see gotcha) |
+| Decision            | Choice                                                                               |
+| ------------------- | ------------------------------------------------------------------------------------ |
+| PyPI/npm name pair  | `spinup-py` / `spinup-ts`                                                            |
+| PyPI auth           | **Trusted Publishing (OIDC)** — no stored token                                      |
+| Smoke test          | Build wheel → install clean → run binary **+ non-interactive scaffold**, assert tree |
+| Promotion gate      | **Merge the release-please PR ⇒ publish** (CI green required to merge)               |
+| Import package      | Rename `create_py_project` → `spinup_py`                                             |
+| GitHub repo         | Rename `create-py-project` → `spinup-py`                                             |
+| `--non-interactive` | Defaults-only                                                                        |
+| Docs deploy         | Folded into the release-please workflow (see gotcha)                                 |
 
 ## Phase 0 — Rename to spinup-py
 
@@ -72,7 +72,7 @@ pipeline so a merged release PR ships to PyPI.
 ## Phase 2 — `build-and-smoke` CI job (in `main.yml`)
 
 - Runs on PR + push to main alongside `quality` and `tests-and-type-check`.
-- Steps: `uv build` → create clean venv (`uv venv` / system venv, *not* `uv run`) → `pip install dist/*.whl` → assert `spinup-py --version` (matches `pyproject` version), `--help`, `new --help`, `update --help` exit 0 → in a temp dir run `spinup-py smoketest-proj --non-interactive` → assert expected tree (`pyproject.toml`, `src/smoketest_proj/`, `tests/`, etc.).
+- Steps: `uv build` → create clean venv (`uv venv` / system venv, _not_ `uv run`) → `pip install dist/*.whl` → assert `spinup-py --version` (matches `pyproject` version), `--help`, `new --help`, `update --help` exit 0 → in a temp dir run `spinup-py smoketest-proj --non-interactive` → assert expected tree (`pyproject.toml`, `src/smoketest_proj/`, `tests/`, etc.).
 - Purpose: catch broken entry points, missing runtime deps, and packaged-scaffold regressions that `uv run`-based tests miss.
 
 ## Phase 3 — release-please + Trusted Publishing (`release-please.yml`)
@@ -94,7 +94,7 @@ Single workflow on `push: main`:
 Releases created by the default `GITHUB_TOKEN` **do not trigger** other workflows.
 A separate `on: release: published` workflow (the current `on-release-main.yml`)
 would therefore **silently stop firing** once releases come from release-please.
-So publish *and* docs-deploy are jobs **inside** the release-please workflow,
+So publish _and_ docs-deploy are jobs **inside** the release-please workflow,
 gated on `release_created`, instead of separate `on: release` workflows — no PAT needed.
 Retire the `release:` trigger of `on-release-main.yml` (or keep it for manual-release fallback only).
 

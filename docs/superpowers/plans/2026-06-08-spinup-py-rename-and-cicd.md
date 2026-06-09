@@ -30,6 +30,7 @@ Spec: `docs/superpowers/specs/2026-06-08-spinup-py-rename-and-cicd-design.md`
 ## Task 1: Rename import package `create_py_project` → `spinup_py`
 
 **Files:**
+
 - Move: `src/create_py_project/` → `src/spinup_py/`
 - Modify: every `from create_py_project`/`import create_py_project` in `src/` and `tests/`
 
@@ -66,12 +67,14 @@ git commit -m "refactor: rename import package create_py_project -> spinup_py"
 ## Task 2: Rename the distribution + CLI to `spinup-py` in `pyproject.toml` and `cli.py`
 
 **Files:**
+
 - Modify: `pyproject.toml` (`[project].name`, `[project.scripts]`, `[project.urls]`)
 - Modify: `src/spinup_py/cli.py` (Typer `name`, `pkg_version`)
 
 - [ ] **Step 1: Update `pyproject.toml`**
 
 Set:
+
 ```toml
 [project]
 name = "spinup-py"
@@ -84,6 +87,7 @@ Repository = "https://github.com/joeblackwaslike/spinup-py"
 Documentation = "https://joeblackwaslike.github.io/spinup-py/"
 Homepage = "https://joeblackwaslike.github.io/spinup-py/"
 ```
+
 Remove the old `create-py-project = ...` script line.
 
 - [ ] **Step 2: Update `cli.py` identifiers**
@@ -112,6 +116,7 @@ git commit -m "refactor: rename distribution + CLI to spinup-py"
 ## Task 3: Update remaining name references (hooks, serena, mkdocs)
 
 **Files:**
+
 - Modify: `hooks/scripts/install-cli.sh`, `.serena/project.yml`, `mkdocs.yml`
 
 - [ ] **Step 1: Replace command/name references**
@@ -120,6 +125,7 @@ git commit -m "refactor: rename distribution + CLI to spinup-py"
 grep -rln "create-py-project\|create_py_project" hooks .serena mkdocs.yml 2>/dev/null
 sed -i '' 's/create-py-project/spinup-py/g' hooks/scripts/install-cli.sh .serena/project.yml mkdocs.yml
 ```
+
 Verify the `install-cli.sh` guard line still references `$CLAUDE_PLUGIN_ROOT` correctly and the install command is `uv tool install --editable .` (unchanged) with status text now saying `spinup-py`.
 
 - [ ] **Step 2: Verify the hook script is still valid**
@@ -139,6 +145,7 @@ git commit -m "refactor: update name references to spinup-py (hooks/serena/mkdoc
 ## Task 4: Add defaults-only `--non-interactive` — `build_default_config`
 
 **Files:**
+
 - Modify: `src/spinup_py/prompts.py` (add `build_default_config`)
 - Test: `tests/test_units.py`
 
@@ -208,6 +215,7 @@ git commit -m "feat: add build_default_config for non-interactive scaffolding"
 ## Task 5: Thread `non_interactive` through `run_new` and `scaffold`
 
 **Files:**
+
 - Modify: `src/spinup_py/scaffold.py` (`run_new`, `scaffold`)
 - Test: `tests/test_units.py`
 
@@ -299,6 +307,7 @@ git commit -m "feat: thread non_interactive through run_new/scaffold (skip push 
 ## Task 6: Wire `--non-interactive` into the CLI
 
 **Files:**
+
 - Modify: `src/spinup_py/cli.py`
 - Test: `tests/test_units.py`
 
@@ -327,14 +336,18 @@ Expected: FAIL (no such option `--non-interactive`).
 - [ ] **Step 3: Add the option to the callback and `new` subcommand**
 
 In `src/spinup_py/cli.py`, add to `main(...)` params:
+
 ```python
     non_interactive: bool = typer.Option(False, "--non-interactive", "-y", help="Scaffold with defaults, no prompts"),
 ```
+
 and in the `elif project_name is not None:` branch:
+
 ```python
         from spinup_py.scaffold import run_new
         run_new(project_name, non_interactive=non_interactive)
 ```
+
 Add the same option to `new_cmd` and pass it through to `run_new`.
 
 > Note: the test patches `spinup_py.scaffold.run_new`; ensure `cli.py` calls `run_new` via `from spinup_py.scaffold import run_new` inside the function (lazy import) so the monkeypatch on the module attribute is observed. If patching the module attribute is unreliable, the test may instead assert on `result.stdout`/a created dir — keep the assertion on the routing call.
@@ -361,44 +374,45 @@ git commit -m "feat: add --non-interactive flag to the CLI"
 ## Task 7: Add the `build-and-smoke` CI job
 
 **Files:**
+
 - Modify: `.github/workflows/main.yml`
 
 - [ ] **Step 1: Append the job** (after `tests-and-type-check`)
 
 ```yaml
-  build-and-smoke:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out
-        uses: actions/checkout@v4
+build-and-smoke:
+  runs-on: ubuntu-latest
+  steps:
+    - name: Check out
+      uses: actions/checkout@v4
 
-      - name: Set up the environment
-        uses: ./.github/actions/setup-python-env
+    - name: Set up the environment
+      uses: ./.github/actions/setup-python-env
 
-      - name: Build distributions
-        run: uv build
+    - name: Build distributions
+      run: uv build
 
-      - name: Smoke-test the built wheel in a clean venv
-        run: |
-          set -euo pipefail
-          python -m venv /tmp/smoke
-          /tmp/smoke/bin/pip install --quiet dist/*.whl
-          /tmp/smoke/bin/spinup-py --version
-          /tmp/smoke/bin/spinup-py --help
-          /tmp/smoke/bin/spinup-py new --help
-          /tmp/smoke/bin/spinup-py update --help
-          workdir="$(mktemp -d)"
-          ( cd "$workdir" && /tmp/smoke/bin/spinup-py smoketest-proj --non-interactive )
-          test -f "$workdir/smoketest-proj/pyproject.toml"
-          test -d "$workdir/smoketest-proj/src/smoketest_proj"
-          test -d "$workdir/smoketest-proj/tests"
-          echo "smoke OK"
+    - name: Smoke-test the built wheel in a clean venv
+      run: |
+        set -euo pipefail
+        python -m venv /tmp/smoke
+        /tmp/smoke/bin/pip install --quiet dist/*.whl
+        /tmp/smoke/bin/spinup-py --version
+        /tmp/smoke/bin/spinup-py --help
+        /tmp/smoke/bin/spinup-py new --help
+        /tmp/smoke/bin/spinup-py update --help
+        workdir="$(mktemp -d)"
+        ( cd "$workdir" && /tmp/smoke/bin/spinup-py smoketest-proj --non-interactive )
+        test -f "$workdir/smoketest-proj/pyproject.toml"
+        test -d "$workdir/smoketest-proj/src/smoketest_proj"
+        test -d "$workdir/smoketest-proj/tests"
+        echo "smoke OK"
 
-      - name: Upload distributions
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/
+    - name: Upload distributions
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist
+        path: dist/
 ```
 
 - [ ] **Step 2: Lint the workflow**
@@ -423,6 +437,7 @@ git commit -m "ci: add build-and-smoke job exercising the built wheel"
 ## Task 8: release-please config + workflow with Trusted Publishing
 
 **Files:**
+
 - Create: `release-please-config.json`, `.release-please-manifest.json`, `.github/workflows/release-please.yml`
 - Modify: `.github/workflows/on-release-main.yml` (retire `release:` trigger)
 
@@ -510,11 +525,13 @@ jobs:
 - [ ] **Step 4: Retire the `release:` trigger in `on-release-main.yml`**
 
 Replace its `on:` block so it no longer fires on release (docs deploy now lives in `release-please.yml`). Either delete the file, or convert it to manual-only:
+
 ```yaml
 name: release-main (manual fallback)
 on:
   workflow_dispatch:
 ```
+
 (keep the existing `deploy-docs` job body). Document in the file header that automatic docs deploy is handled by `release-please.yml`.
 
 - [ ] **Step 5: Validate the workflows**
@@ -534,6 +551,7 @@ git commit -m "ci: add release-please + PyPI Trusted Publishing; retire release-
 ## Task 9: README & docs
 
 **Files:**
+
 - Modify: `README.md` (+ docs pages referencing the old name)
 
 - [ ] **Step 1: Update install/usage + name references**
@@ -542,6 +560,7 @@ git commit -m "ci: add release-please + PyPI Trusted Publishing; retire release-
 grep -rln "create-py-project\|create_py_project" README.md docs 2>/dev/null
 sed -i '' 's/create-py-project/spinup-py/g; s/create_py_project/spinup_py/g' README.md
 ```
+
 Then by hand: ensure Quickstart shows `uvx spinup-py my-project` and `uv tool install spinup-py`; add an "Install from source" note (`uv tool install --editable .`); document the `new`/`update` subcommands, `--update`, `--version`, and `--non-interactive`; add a one-line note that `spinup-py` is the Python sibling of `spinup-ts`.
 
 - [ ] **Step 2: Verify no stale references remain**
@@ -565,12 +584,14 @@ git commit -m "docs: rebrand README/docs to spinup-py + document --non-interacti
 - [ ] **Step 1: Run the full local gate**
 
 Run:
+
 ```bash
 PYTHONPATH="$PWD" .venv/bin/python -m pytest -q
 .venv/bin/mypy src
 .venv/bin/deptry .
 .venv/bin/pre-commit run -a
 ```
+
 Expected: all green.
 
 - [ ] **Step 2: Push and open the PR**
@@ -579,6 +600,7 @@ Expected: all green.
 git push -u origin feat/spinup-py-rename-cicd
 gh pr create --repo joeblackwaslike/create-py-project --fill --title "Rename to spinup-py + CI/CD & PyPI publishing"
 ```
+
 Expected: PR created; `quality`, `tests-and-type-check (3.10–3.13)`, and the new `build-and-smoke` job run and pass.
 
 - [ ] **Step 3: Merge once green** (the maintainer merges; do not self-merge unless instructed).

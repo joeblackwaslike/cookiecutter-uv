@@ -24,9 +24,7 @@ def main(
         help="Retrofit an existing project at DIR (default: current directory)",
     ),
     version: bool = typer.Option(False, "--version", "-v", help="Show version and exit"),
-    non_interactive: bool = typer.Option(
-        False, "--non-interactive", "-y", help="Scaffold with defaults, no prompts"
-    ),
+    non_interactive: bool = typer.Option(False, "--non-interactive", "-y", help="Scaffold with defaults, no prompts"),
 ) -> None:
     if ctx.invoked_subcommand is not None:
         return
@@ -56,9 +54,7 @@ def main(
 @app.command("new")
 def new_cmd(
     project_name: str | None = typer.Argument(None, help="Project name (kebab-case)"),
-    non_interactive: bool = typer.Option(
-        False, "--non-interactive", "-y", help="Scaffold with defaults, no prompts"
-    ),
+    non_interactive: bool = typer.Option(False, "--non-interactive", "-y", help="Scaffold with defaults, no prompts"),
 ) -> None:
     """Scaffold a new Python project through guided prompts."""
     from spinup_py.scaffold import run_new

@@ -90,9 +90,7 @@ def scaffold(dest_dir: str, config: ProjectConfig, non_interactive: bool = False
 
     # GitHub
     if not non_interactive:
-        push_choice = questionary.select(
-            "Push to GitHub?", choices=["public", "private", "skip"], default="skip"
-        ).ask()
+        push_choice = questionary.select("Push to GitHub?", choices=["public", "private", "skip"], default="skip").ask()
         if push_choice in ("public", "private"):
             console.print("[dim]Creating GitHub repo...[/dim]")
             try:

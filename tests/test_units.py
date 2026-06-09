@@ -128,9 +128,7 @@ def test_render_strips_unresolved_tokens() -> None:
 # ── RC file load/save with legacy back-compat ───────────────────────────────
 
 
-def test_load_user_defaults_reads_legacy_when_new_absent(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_load_user_defaults_reads_legacy_when_new_absent(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     new_rc = tmp_path / ".spinup-pyrc.toml"
     legacy_rc = tmp_path / ".create-py-projectrc.toml"
     legacy_rc.write_text(
@@ -147,9 +145,7 @@ def test_load_user_defaults_reads_legacy_when_new_absent(
     assert defaults.python_version == "3.11"
 
 
-def test_load_user_defaults_prefers_new_over_legacy(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_load_user_defaults_prefers_new_over_legacy(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     new_rc = tmp_path / ".spinup-pyrc.toml"
     legacy_rc = tmp_path / ".create-py-projectrc.toml"
     new_rc.write_text('[defaults]\nauthor = "New Author"\n')
@@ -160,15 +156,11 @@ def test_load_user_defaults_prefers_new_over_legacy(
     assert load_user_defaults().author == "New Author"
 
 
-def test_save_user_defaults_writes_new_path(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_save_user_defaults_writes_new_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     new_rc = tmp_path / ".spinup-pyrc.toml"
     legacy_rc = tmp_path / ".create-py-projectrc.toml"
     # Legacy file has both a defaults table and an unrelated section to preserve.
-    legacy_rc.write_text(
-        '[defaults]\nauthor = "Legacy Author"\n\n[other]\nkeep = "me"\n'
-    )
+    legacy_rc.write_text('[defaults]\nauthor = "Legacy Author"\n\n[other]\nkeep = "me"\n')
     monkeypatch.setattr(prompts_mod, "RC_PATH", new_rc)
     monkeypatch.setattr(prompts_mod, "LEGACY_RC_PATH", legacy_rc)
 
