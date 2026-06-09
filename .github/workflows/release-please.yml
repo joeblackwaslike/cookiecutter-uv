@@ -4,6 +4,12 @@ on:
   push:
     branches: [main]
 
+# Serialize release runs on main so a publish is never interrupted or raced by a
+# subsequent push (do not cancel an in-flight release/publish).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: write
   pull-requests: write
