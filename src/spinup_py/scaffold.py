@@ -1,9 +1,14 @@
+import os
 import shutil
 import subprocess
 import sys
 from pathlib import Path
 
 import questionary
+from cookiecutter.exceptions import (  # type: ignore[import-untyped]
+    RepositoryCloneFailed,
+    RepositoryNotFound,
+)
 from cookiecutter.main import cookiecutter  # type: ignore[import-untyped]
 from rich.console import Console
 
@@ -11,16 +16,25 @@ from spinup_py.types import ProjectConfig
 
 console = Console()
 
+REMOTE_TEMPLATE = "gh:joeblackwaslike/spinup-py"
 
-def _template_dir() -> str:
+
+def _template_ref() -> str:
+    """Resolve the cookiecutter template reference.
+
+    1. An explicit override via the SPINUP_PY_TEMPLATE env var (used by CI smoke
+       tests and power users) — a local path or any cookiecutter-accepted ref.
+    2. The local repository root when running from a source checkout / editable
+       install (cookiecutter.json present next to the installed package).
+    3. Otherwise the published template on GitHub, which cookiecutter clones.
+    """
+    override = os.environ.get("SPINUP_PY_TEMPLATE")
+    if override:
+        return override
     root = Path(__file__).parent.parent.parent
-    if not (root / "cookiecutter.json").exists():
-        console.print(
-            "[red]Template not found. This CLI must be installed in editable mode "
-            "(uv tool install --editable .) from the repository root.[/red]"
-        )
-        raise SystemExit(1)
-    return str(root)
+    if (root / "cookiecutter.json").exists():
+        return str(root)
+    return REMOTE_TEMPLATE
 
 
 def scaffold(dest_dir: str, config: ProjectConfig, non_interactive: bool = False) -> None:
@@ -38,16 +52,24 @@ def scaffold(dest_dir: str, config: ProjectConfig, non_interactive: bool = False
             f"[red]dest_dir basename ({dest.name!r}) must match " f"project_name ({config.project_name!r}).[/red]"
         )
         raise SystemExit(1)
-    template_dir = _template_dir()
+    template_ref = _template_ref()
 
     console.print(f"\n[bold]Scaffolding [cyan]{config.project_name}[/cyan]...[/bold]")
 
-    cookiecutter(
-        template_dir,
-        no_input=True,
-        extra_context=config.to_cookiecutter_dict(),
-        output_dir=str(dest.parent),
-    )
+    try:
+        cookiecutter(
+            template_ref,
+            no_input=True,
+            extra_context=config.to_cookiecutter_dict(),
+            output_dir=str(dest.parent),
+        )
+    except (RepositoryNotFound, RepositoryCloneFailed) as exc:
+        console.print(f"[red]Could not fetch the project template ({template_ref}): {exc}[/red]")
+        console.print(
+            "[dim]If you are offline or the template repo is unavailable, point "
+            "SPINUP_PY_TEMPLATE at a local cookiecutter template directory.[/dim]"
+        )
+        raise SystemExit(1) from exc
 
     project_dir = dest.parent / config.project_name
 

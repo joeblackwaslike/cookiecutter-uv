@@ -188,6 +188,49 @@ def test_save_user_defaults_writes_new_path(
     assert "keep" in content
 
 
+# ── _template_ref() resolution ──────────────────────────────────────────────
+
+
+def test_template_ref_uses_env_override(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("SPINUP_PY_TEMPLATE", "gh:foo/bar")
+    assert scaffold_mod._template_ref() == "gh:foo/bar"
+
+
+def test_template_ref_uses_local_when_present(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("SPINUP_PY_TEMPLATE", raising=False)
+    # Point root (Path(__file__).parent.parent.parent) at tmp_path containing cookiecutter.json.
+    (tmp_path / "cookiecutter.json").write_text("{}")
+    monkeypatch.setattr(scaffold_mod, "__file__", str(tmp_path / "src" / "spinup_py" / "scaffold.py"))
+    assert scaffold_mod._template_ref() == str(tmp_path)
+
+
+def test_template_ref_falls_back_to_remote(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("SPINUP_PY_TEMPLATE", raising=False)
+    # Point root at tmp_path with NO cookiecutter.json.
+    monkeypatch.setattr(scaffold_mod, "__file__", str(tmp_path / "src" / "spinup_py" / "scaffold.py"))
+    assert scaffold_mod._template_ref() == scaffold_mod.REMOTE_TEMPLATE
+    assert scaffold_mod.REMOTE_TEMPLATE == "gh:joeblackwaslike/spinup-py"
+
+
+def test_scaffold_remote_fetch_failure_is_friendly(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    from cookiecutter.exceptions import RepositoryNotFound
+
+    cfg = _config(project_name="x")
+
+    def boom(*_a: object, **_k: object) -> object:
+        raise RepositoryNotFound("gh:foo/bar could not be found")
+
+    monkeypatch.setattr(scaffold_mod, "cookiecutter", boom)
+    monkeypatch.setattr(scaffold_mod, "_template_ref", lambda: "gh:foo/bar")
+    with pytest.raises(SystemExit) as exc:
+        scaffold_mod.scaffold(str(tmp_path / "x"), cfg, non_interactive=True)
+    assert exc.value.code == 1
+    captured = capsys.readouterr()
+    assert "SPINUP_PY_TEMPLATE" in (captured.out + captured.err)
+
+
 # ── scaffold() git-failure cleanup ──────────────────────────────────────────
 
 
@@ -202,7 +245,7 @@ def test_scaffold_cleans_up_on_git_failure(tmp_path: Path, monkeypatch: pytest.M
         return str(project_dir)
 
     monkeypatch.setattr(scaffold_mod, "cookiecutter", fake_cookiecutter)
-    monkeypatch.setattr(scaffold_mod, "_template_dir", lambda: str(tmp_path))
+    monkeypatch.setattr(scaffold_mod, "_template_ref", lambda: str(tmp_path))
 
     # Make the first git command fail.
     def fake_run(cmd: list[str], cwd: Path) -> None:
@@ -218,7 +261,7 @@ def test_scaffold_cleans_up_on_git_failure(tmp_path: Path, monkeypatch: pytest.M
 
 def test_scaffold_rejects_mismatched_dest_basename(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     cfg = _config(project_name="my-project")
-    monkeypatch.setattr(scaffold_mod, "_template_dir", lambda: str(tmp_path))
+    monkeypatch.setattr(scaffold_mod, "_template_ref", lambda: str(tmp_path))
     with pytest.raises(SystemExit) as exc:
         scaffold(str(tmp_path / "different-name"), cfg)
     assert exc.value.code == 1
@@ -233,7 +276,7 @@ def test_scaffold_non_interactive_skips_push_prompt(tmp_path: Path, monkeypatch:
         return str(project_dir)
 
     monkeypatch.setattr(scaffold_mod, "cookiecutter", fake_cookiecutter)
-    monkeypatch.setattr(scaffold_mod, "_template_dir", lambda: str(tmp_path))
+    monkeypatch.setattr(scaffold_mod, "_template_ref", lambda: str(tmp_path))
     monkeypatch.setattr(scaffold_mod, "_run", lambda cmd, cwd: None)  # git no-ops
 
     # Stub out subprocess (gh/bd) so non-interactive scaffold stays hermetic.
