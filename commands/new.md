@@ -54,7 +54,7 @@ Find the plugin root and determine the destination directory. Then write and run
 PLUGIN_ROOT="$(python3 -c "import spinup_py, pathlib; print(pathlib.Path(spinup_py.__file__).parent.parent.parent)")"
 
 # Write temp script
-cat > /tmp/cpp-scaffold.py << 'PYEOF'
+cat > /tmp/spinup-scaffold.py << 'PYEOF'
 import sys
 sys.path.insert(0, "PLUGIN_SRC_PATH")
 from spinup_py.scaffold import scaffold
@@ -91,7 +91,7 @@ cookiecutter(
 print(f"Scaffolded: {dest}")
 PYEOF
 
-python3 /tmp/cpp-scaffold.py
+python3 /tmp/spinup-scaffold.py
 ```
 
 Replace each `PLACEHOLDER` with the collected values before running. Use `True`/`False` for boolean fields.

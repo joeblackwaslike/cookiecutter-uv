@@ -1,18 +1,18 @@
 <p align="center">
-  <img width="600" src="https://raw.githubusercontent.com/joeblackwaslike/create-py-project/main/docs/static/cookiecutter.svg">
+  <img width="600" src="https://raw.githubusercontent.com/joeblackwaslike/spinup-py/main/docs/static/cookiecutter.svg">
 </p style = "margin-bottom: 2rem;">
 
 ---
 
-[![Build status](https://img.shields.io/github/actions/workflow/status/joeblackwaslike/create-py-project/main.yml?branch=main)](https://github.com/joeblackwaslike/create-py-project/actions/workflows/main.yml?query=branch%3Amain)
-[![Supported Python versions](https://img.shields.io/badge/python-3.10_%7C_3.11_%7C_3.12_%7C_3.13-blue?labelColor=grey&color=blue)](https://github.com/joeblackwaslike/create-py-project/blob/main/pyproject.toml)
-[![Docs](https://img.shields.io/badge/docs-gh--pages-blue)](https://joeblackwaslike.github.io/create-py-project/)
-[![License](https://img.shields.io/github/license/joeblackwaslike/create-py-project)](https://img.shields.io/github/license/joeblackwaslike/create-py-project)
+[![Build status](https://img.shields.io/github/actions/workflow/status/joeblackwaslike/spinup-py/main.yml?branch=main)](https://github.com/joeblackwaslike/spinup-py/actions/workflows/main.yml?query=branch%3Amain)
+[![Supported Python versions](https://img.shields.io/badge/python-3.10_%7C_3.11_%7C_3.12_%7C_3.13-blue?labelColor=grey&color=blue)](https://github.com/joeblackwaslike/spinup-py/blob/main/pyproject.toml)
+[![Docs](https://img.shields.io/badge/docs-gh--pages-blue)](https://joeblackwaslike.github.io/spinup-py/)
+[![License](https://img.shields.io/github/license/joeblackwaslike/spinup-py)](https://img.shields.io/github/license/joeblackwaslike/spinup-py)
 
 This is a modern Cookiecutter template that can be used to initiate a Python project with all the necessary tools for development, testing, and deployment. It supports the following features:
 
 - [uv](https://docs.astral.sh/uv/) for dependency management
-- Supports src layout](https://packaging.python.org/en/latest/discussions/src-layout-vs-flat-layout/).
+- Supports [src layout](https://packaging.python.org/en/latest/discussions/src-layout-vs-flat-layout/)
 - CI/CD with [GitHub Actions](https://github.com/features/actions)
 - Pre-commit hooks with [pre-commit](https://pre-commit.com/)
 - Code quality with [ruff](https://github.com/charliermarsh/ruff), [mypy](https://mypy.readthedocs.io/en/stable/), [wemake-python-styleguide](https://wemake-python-styleguide.readthedocs.io/en/latest/pages/usage/setup.html), [deptry](https://github.com/joeblackwaslike/deptry/) and [prettier](https://prettier.io/)
@@ -26,7 +26,7 @@ This is a modern Cookiecutter template that can be used to initiate a Python pro
 ---
 
 <p align="center">
-  <a href="https://joeblackwaslike.github.io/create-py-project/">Documentation</a> - <a href="https://github.com/joeblackwaslike/create-py-project-example">Example</a>
+  <a href="https://joeblackwaslike.github.io/spinup-py/">Documentation</a> - <a href="https://github.com/joeblackwaslike/spinup-py-example">Example</a>
 </p>
 
 ---
@@ -38,14 +38,14 @@ This is a modern Cookiecutter template that can be used to initiate a Python pro
 Navigate to the directory where you want your new project and run:
 
 ```shell
-uvx create-py-project my-project
+uvx spinup-py my-project
 ```
 
 Or install globally first:
 
 ```shell
-uv tool install create-py-project
-create-py-project my-project
+uv tool install spinup-py
+spinup-py my-project
 ```
 
 Follow the guided prompts to configure your project. Once complete, a new directory `my-project/` will be created with everything set up.
@@ -53,7 +53,55 @@ Follow the guided prompts to configure your project. Once complete, a new direct
 To retrofit an existing project with the latest tooling:
 
 ```shell
-create-py-project --update /path/to/existing-project
+spinup-py --update /path/to/existing-project
+```
+
+> `spinup-py` is the Python sibling of [`spinup-ts`](https://www.npmjs.com/package/spinup-ts), the equivalent TypeScript project scaffolder.
+
+### Install from source
+
+For local or development use (e.g. running it as a Claude Code plugin), install the checkout directly with an editable install:
+
+```shell
+uv tool install --editable .
+```
+
+## Usage
+
+```shell
+# Scaffold a new project (bare form — positional name)
+spinup-py my-project
+
+# Same thing via the explicit subcommand
+spinup-py new my-project
+
+# Retrofit an existing project with the current tooling
+spinup-py update /path/to/existing-project
+
+# Or via the root flag (equivalent to `update`)
+spinup-py --update /path/to/existing-project
+
+# Print the installed version
+spinup-py --version
+```
+
+### Flags
+
+| Flag / command             | Description                                                                  |
+| -------------------------- | ---------------------------------------------------------------------------- |
+| `spinup-py <name>`         | Scaffold a new project with the given name (runs the guided prompts).        |
+| `spinup-py new [<name>]`   | Explicit subcommand for scaffolding a new project.                           |
+| `spinup-py update [<dir>]` | Retrofit an existing project at `<dir>` (defaults to the current directory). |
+| `--update`, `-u <dir>`     | Root-level equivalent of `update` — retrofit an existing project at `<dir>`. |
+| `--non-interactive`, `-y`  | Scaffold with sensible defaults and no prompts.                              |
+| `--version`, `-v`          | Print the installed version and exit.                                        |
+
+### Offline / custom template
+
+By default the published CLI fetches its Cookiecutter template from GitHub (`gh:joeblackwaslike/spinup-py`). To use a local or custom template instead — handy when working offline or from a fork — set the `SPINUP_PY_TEMPLATE` environment variable to any Cookiecutter reference (a local path, a different GitHub repo, etc.):
+
+```shell
+SPINUP_PY_TEMPLATE=/path/to/template spinup-py my-project
 ```
 
 ## Acknowledgements & Lineage
