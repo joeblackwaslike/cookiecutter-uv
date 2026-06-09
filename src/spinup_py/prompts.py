@@ -3,32 +3,47 @@ from pathlib import Path
 
 import questionary
 import tomlkit
+from pydantic import ValidationError
 from rich.console import Console
 from rich.table import Table
 
-from create_py_project.types import ProjectConfig, UserDefaults
+from spinup_py.types import ProjectConfig, UserDefaults
 
-RC_PATH = Path.home() / ".create-py-projectrc.toml"
+RC_PATH = Path.home() / ".spinup-pyrc.toml"
+LEGACY_RC_PATH = Path.home() / ".create-py-projectrc.toml"
 console = Console()
 
 
-def load_user_defaults() -> UserDefaults:
+def _rc_read_path() -> Path | None:
+    """Path to read defaults from: new RC if present, else legacy, else None."""
     if RC_PATH.exists():
+        return RC_PATH
+    if LEGACY_RC_PATH.exists():
+        return LEGACY_RC_PATH
+    return None
+
+
+def load_user_defaults() -> UserDefaults:
+    read_path = _rc_read_path()
+    if read_path is not None:
         try:
-            data = tomlkit.parse(RC_PATH.read_text()).get("defaults", {})
+            data = tomlkit.parse(read_path.read_text()).get("defaults", {})
             return UserDefaults(**data)
-        except (OSError, tomlkit.exceptions.TOMLKitError, ValueError):
-            console.print(f"[yellow]Warning: could not parse {RC_PATH}, using defaults[/yellow]")
+        except (OSError, tomlkit.exceptions.TOMLKitError, ValidationError):
+            # ValidationError (pydantic) does NOT inherit from ValueError, so it
+            # must be caught explicitly or a malformed RC file crashes the CLI.
+            console.print(f"[yellow]Warning: could not parse {read_path}, using defaults[/yellow]")
     return UserDefaults()
 
 
 def save_user_defaults(d: UserDefaults) -> None:
-    if RC_PATH.exists():
+    read_path = _rc_read_path()
+    if read_path is not None:
         try:
-            doc = tomlkit.parse(RC_PATH.read_text())
+            doc = tomlkit.parse(read_path.read_text())
         except (OSError, tomlkit.exceptions.TOMLKitError) as exc:
             console.print(
-                f"[yellow]Warning: could not parse {RC_PATH} ({exc}); " f"non-defaults sections will be lost[/yellow]"
+                f"[yellow]Warning: could not parse {read_path} ({exc}); " f"non-defaults sections will be lost[/yellow]"
             )
             doc = tomlkit.document()
     else:
@@ -45,8 +60,29 @@ def save_user_defaults(d: UserDefaults) -> None:
         console.print(f"[yellow]Warning: could not save defaults to {RC_PATH}[/yellow]")
 
 
+def build_default_config(project_name: str) -> ProjectConfig:
+    """Build a ProjectConfig from saved/built-in defaults with no prompts."""
+    defaults = load_user_defaults()
+    return ProjectConfig.create(
+        project_name=project_name,
+        description="",
+        author=defaults.author,
+        email=defaults.email,
+        github_handle=defaults.github_handle,
+        python_version=defaults.python_version,
+        include_github_actions=True,
+        devcontainer=True,
+        include_docs=False,
+        codecov=False,
+        dockerfile=False,
+        deptry=True,
+        publish_to_pypi=False,
+        open_source_license="MIT license",
+    )
+
+
 def run_prompts(project_name_arg: str | None = None) -> ProjectConfig:
-    console.rule("[bold blue]create-py-project[/bold blue]")
+    console.rule("[bold blue]spinup-py[/bold blue]")
     defaults = load_user_defaults()
 
     if project_name_arg:

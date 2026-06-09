@@ -443,7 +443,7 @@ def update_project(target_dir: str) -> None:
         console.print(f"[red]Directory not found: {target}[/red]")
         raise SystemExit(1)
 
-    console.rule("[bold blue]create-py-project update[/bold blue]")
+    console.rule("[bold blue]spinup-py update[/bold blue]")
     console.print(f"[dim]Target: {target}[/dim]\n")
 
     available = detect_available_updates(target)

@@ -1,5 +1,5 @@
 [project]
-name = "create-py-project"
+name = "spinup-py"
 version = "0.1.0"
 description = "Scaffold and maintain production-ready Python projects with a rich CLI and Claude Code plugin."
 authors = [{ name = "Joe Black", email = "me@joeblack.nyc" }]
@@ -28,12 +28,12 @@ classifiers = [
 ]
 
 [project.scripts]
-create-py-project = "create_py_project.cli:app"
+spinup-py = "spinup_py.cli:app"
 
 [project.urls]
-Repository = "https://github.com/joeblackwaslike/create-py-project"
-Documentation = "https://joeblackwaslike.github.io/create-py-project/"
-Homepage = "https://joeblackwaslike.github.io/create-py-project/"
+Repository = "https://github.com/joeblackwaslike/spinup-py"
+Documentation = "https://joeblackwaslike.github.io/spinup-py/"
+Homepage = "https://joeblackwaslike.github.io/spinup-py/"
 
 [dependency-groups]
 dev = [
@@ -65,10 +65,10 @@ skip_empty = true
 
 [tool.coverage.run]
 branch = true
-source = ["create_py_project"]
+source = ["spinup_py"]
 
 [tool.mypy]
-files = ['src/create_py_project']
+files = ['src/spinup_py']
 disallow_untyped_defs = true
 disallow_any_unimported = true
 no_implicit_optional = true
@@ -84,7 +84,7 @@ extend_exclude = [
 
 [tool.deptry.per_rule_ignores]
 DEP002 = ["cookiecutter"]
-DEP003 = ["create_py_project", "rich"]
+DEP003 = ["spinup_py", "rich"]
 
 [tool.ruff]
 target-version = "py310"
@@ -140,4 +140,4 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["S101", "S603"]
-"src/create_py_project/*" = ["S603", "S607"]
+"src/spinup_py/*" = ["S603", "S607"]

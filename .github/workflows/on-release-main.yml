@@ -1,9 +1,10 @@
-name: release-main
+name: release-main (manual fallback)
 
+# NOTE: Automatic docs deploy on release now lives in release-please.yml
+# (releases created by GITHUB_TOKEN do not trigger `on: release` workflows).
+# This workflow is kept as a manual fallback only.
 on:
-  release:
-    types: [published]
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   deploy-docs:

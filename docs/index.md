@@ -24,21 +24,21 @@ This is a modern Cookiecutter template that can be used to initiate a Python pro
 - Containerization with [Docker](https://www.docker.com/)
 - Development environment with [VSCode devcontainers](https://code.visualstudio.com/docs/devcontainers/containers)
 
-An example of a repository generated with this package can be found [here](https://github.com/joeblackwaslike/create-py-project-example).
+An example of a repository generated with this package can be found [here](https://github.com/joeblackwaslike/spinup-py-example).
 
 ## Quickstart
 
 Navigate to the directory where you want your new project and run:
 
 ```bash
-uvx create-py-project my-project
+uvx spinup-py my-project
 ```
 
 Or install globally first:
 
 ```bash
-uv tool install create-py-project
-create-py-project my-project
+uv tool install spinup-py
+spinup-py my-project
 ```
 
 Follow the guided prompts to configure your project. Once complete, a new directory `my-project/` will be created with everything set up.
