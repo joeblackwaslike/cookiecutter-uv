@@ -3,6 +3,7 @@ from pathlib import Path
 
 import questionary
 import tomlkit
+from pydantic import ValidationError
 from rich.console import Console
 from rich.table import Table
 
@@ -28,7 +29,9 @@ def load_user_defaults() -> UserDefaults:
         try:
             data = tomlkit.parse(read_path.read_text()).get("defaults", {})
             return UserDefaults(**data)
-        except (OSError, tomlkit.exceptions.TOMLKitError, ValueError):
+        except (OSError, tomlkit.exceptions.TOMLKitError, ValidationError):
+            # ValidationError (pydantic) does NOT inherit from ValueError, so it
+            # must be caught explicitly or a malformed RC file crashes the CLI.
             console.print(f"[yellow]Warning: could not parse {read_path}, using defaults[/yellow]")
     return UserDefaults()
 

@@ -82,7 +82,9 @@ def scaffold(dest_dir: str, config: ProjectConfig, non_interactive: bool = False
             ["git", "commit", "-m", "chore: initial scaffold from spinup-py"],
             cwd=project_dir,
         )
-    except _CommandError as exc:
+    except (_CommandError, OSError) as exc:
+        # OSError covers FileNotFoundError when git is not installed/on PATH,
+        # so we still clean up and exit cleanly instead of crashing.
         console.print(f"[red]{exc}[/red]")
         console.print(f"[yellow]Cleaning up {project_dir}[/yellow]")
         shutil.rmtree(project_dir, ignore_errors=True)

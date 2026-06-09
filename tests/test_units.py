@@ -180,6 +180,17 @@ def test_save_user_defaults_writes_new_path(tmp_path: Path, monkeypatch: pytest.
     assert "keep" in content
 
 
+def test_load_user_defaults_invalid_data_falls_back(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    # Valid TOML but invalid values raise pydantic ValidationError (which is NOT a
+    # ValueError); load_user_defaults must catch it and fall back to defaults.
+    new_rc = tmp_path / ".spinup-pyrc.toml"
+    new_rc.write_text('[defaults]\npython_version = "2.7"\n')
+    monkeypatch.setattr(prompts_mod, "RC_PATH", new_rc)
+    monkeypatch.setattr(prompts_mod, "LEGACY_RC_PATH", tmp_path / "absent.toml")
+
+    assert load_user_defaults() == UserDefaults()
+
+
 # ── _template_ref() resolution ──────────────────────────────────────────────
 
 
@@ -249,6 +260,30 @@ def test_scaffold_cleans_up_on_git_failure(tmp_path: Path, monkeypatch: pytest.M
         scaffold(str(project_dir), cfg)
     assert exc.value.code == 1
     assert not project_dir.exists()  # partial project was cleaned up
+
+
+def test_scaffold_cleans_up_when_git_missing(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    # git not installed -> subprocess raises FileNotFoundError (an OSError); scaffold
+    # must still clean up the partial project and exit cleanly rather than crash.
+    cfg = _config(project_name="my-project")
+    project_dir = tmp_path / "my-project"
+
+    def fake_cookiecutter(*_args: object, **_kwargs: object) -> str:
+        project_dir.mkdir(parents=True)
+        return str(project_dir)
+
+    monkeypatch.setattr(scaffold_mod, "cookiecutter", fake_cookiecutter)
+    monkeypatch.setattr(scaffold_mod, "_template_ref", lambda: str(tmp_path))
+
+    def fake_run(cmd: list[str], cwd: Path) -> None:
+        raise FileNotFoundError("git not found")
+
+    monkeypatch.setattr(scaffold_mod, "_run", fake_run)
+
+    with pytest.raises(SystemExit) as exc:
+        scaffold(str(project_dir), cfg)
+    assert exc.value.code == 1
+    assert not project_dir.exists()  # cleaned up despite git being absent
 
 
 def test_scaffold_rejects_mismatched_dest_basename(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
