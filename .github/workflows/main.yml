@@ -57,3 +57,46 @@ jobs:
       - name: Upload coverage reports to Codecov with GitHub Action on Python 3.11 for Ubuntu
         uses: codecov/codecov-action@v3
         if: ${{ matrix.python-version == '3.11' }}
+
+  build-and-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up the environment
+        uses: ./.github/actions/setup-python-env
+
+      - name: Build distributions
+        run: uv build
+
+      - name: Smoke-test the built wheel in a clean venv
+        env:
+          # Use this PR's checked-out template (offline, deterministic) instead of
+          # the published gh: remote, which isn't available until the repo rename.
+          SPINUP_PY_TEMPLATE: ${{ github.workspace }}
+        run: |
+          set -euo pipefail
+          git config --global user.email "ci@example.com"
+          git config --global user.name "spinup-py CI"
+          git config --global init.defaultBranch main
+          wheel="$(ls dist/*.whl)"
+          test "$(printf '%s\n' "$wheel" | wc -l)" -eq 1
+          python -m venv /tmp/smoke
+          /tmp/smoke/bin/pip install --quiet "$wheel"
+          /tmp/smoke/bin/spinup-py --version
+          /tmp/smoke/bin/spinup-py --help
+          /tmp/smoke/bin/spinup-py new --help
+          /tmp/smoke/bin/spinup-py update --help
+          workdir="$(mktemp -d)"
+          ( cd "$workdir" && /tmp/smoke/bin/spinup-py smoketest-proj --non-interactive )
+          test -f "$workdir/smoketest-proj/pyproject.toml"
+          test -d "$workdir/smoketest-proj/src/smoketest_proj"
+          test -d "$workdir/smoketest-proj/tests"
+          echo "smoke OK"
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-smoke
+          path: dist/
