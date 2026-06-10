@@ -1,6 +1,6 @@
 # Install uv
 FROM python:{{cookiecutter.python_version}}-slim
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.11.19 /uv /bin/uv
 
 # Create a non-root user and give it ownership of /app up front, so we never need
 # a costly recursive chown of the populated virtualenv in a later layer.
