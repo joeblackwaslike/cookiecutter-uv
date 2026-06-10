@@ -57,4 +57,4 @@ jobs:
       - name: Set up the environment
         uses: ./.github/actions/setup-python-env
       - name: Deploy documentation
-        run: uv run mkdocs gh-deploy --force
+        run: uv run --group docs mkdocs gh-deploy --force
