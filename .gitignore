@@ -149,3 +149,8 @@ cython_debug/
 
 # backloh / local
 docs/_backlog.md
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
