@@ -1,7 +1,6 @@
 # Keep build context minimal and avoid copying sensitive or local-only files
 # into the image (the Dockerfile uses `COPY . /app`).
 .git
-.gitignore
 .venv
 __pycache__/
 *.py[cod]

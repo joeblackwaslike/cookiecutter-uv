@@ -120,6 +120,7 @@ def test_dockerfile(cookies, tmp_path):
         result = cookies.bake(extra_context={"dockerfile": "y"})
         assert result.exit_code == 0
         assert os.path.isfile(f"{result.project_path}/Dockerfile")
+        assert os.path.isfile(f"{result.project_path}/.dockerignore")
 
 
 def test_not_dockerfile(cookies, tmp_path):
@@ -127,6 +128,7 @@ def test_not_dockerfile(cookies, tmp_path):
         result = cookies.bake(extra_context={"dockerfile": "n"})
         assert result.exit_code == 0
         assert not os.path.isfile(f"{result.project_path}/Dockerfile")
+        assert not os.path.isfile(f"{result.project_path}/.dockerignore")
 
 
 def test_codecov(cookies, tmp_path):

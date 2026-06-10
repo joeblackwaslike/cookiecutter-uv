@@ -402,12 +402,19 @@ def detect_available_updates(target: Path) -> list[UpdateOption]:
         )
 
     if not (target / "Dockerfile").exists():
+
+        def _add_dockerfile(t: Path) -> None:
+            # The hardened Dockerfile relies on .dockerignore to keep secrets and
+            # local dirs out of `COPY . /app`, so ship both together.
+            _copy_file("Dockerfile", t, project_name)
+            _copy_file(".dockerignore", t, project_name)
+
         options.append(
             UpdateOption(
                 value="dockerfile",
                 label="Add Dockerfile",
                 hint="Multi-stage Python build",
-                apply=lambda t: _copy_file("Dockerfile", t, project_name),
+                apply=_add_dockerfile,
             )
         )
 
