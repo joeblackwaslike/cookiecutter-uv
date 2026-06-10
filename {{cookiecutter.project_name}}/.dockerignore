@@ -1,0 +1,22 @@
+# Keep build context minimal and avoid copying sensitive or local-only files
+# into the image (the Dockerfile uses `COPY . /app`).
+.git
+.gitignore
+.venv
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+.env
+.env.*
+.devcontainer/
+.github/
+.vscode/
+.idea/
+*.log
