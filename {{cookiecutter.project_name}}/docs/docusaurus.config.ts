@@ -1,18 +1,35 @@
-import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
   title: "{{cookiecutter.project_name}}",
   tagline: "{{cookiecutter.description}}",
-  favicon: "img/favicon.ico",
+  favicon: "img/logo.svg",
+
   url: "https://{{cookiecutter.github_handle}}.github.io",
   baseUrl: "/{{cookiecutter.project_name}}/",
   organizationName: "{{cookiecutter.github_handle}}",
   projectName: "{{cookiecutter.project_name}}",
+  trailingSlash: false,
+
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
-  i18n: { defaultLocale: "en", locales: ["en"] },
+
+  i18n: {
+    defaultLocale: "en",
+    locales: ["en"],
+  },
+
+  plugins: [
+    [
+      "docusaurus-plugin-llms",
+      {
+        generateLLMsTxt: true,
+        generateMarkdownFiles: true,
+      },
+    ],
+  ],
+
   presets: [
     [
       "classic",
@@ -20,20 +37,21 @@ const config: Config = {
         docs: {
           sidebarPath: "./sidebars.ts",
           editUrl:
-            "https://github.com/{{cookiecutter.github_handle}}/{{cookiecutter.project_name}}/tree/main/docs/",
+            "https://github.com/{{cookiecutter.github_handle}}/{{cookiecutter.project_name}}/edit/main/docs/",
+          routeBasePath: "/",
         },
         blog: false,
-        theme: { customCss: "./src/css/custom.css" },
       } satisfies Preset.Options,
     ],
   ],
+
   themeConfig: {
     navbar: {
       title: "{{cookiecutter.project_name}}",
       items: [
         {
           type: "docSidebar",
-          sidebarId: "docs",
+          sidebarId: "mainSidebar",
           position: "left",
           label: "Docs",
         },
@@ -46,12 +64,12 @@ const config: Config = {
     },
     footer: {
       style: "dark",
-      copyright: `Copyright © ${new Date().getFullYear()} {{cookiecutter.author}}. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} {{cookiecutter.author}}. Built with <a href="https://docusaurus.io">Docusaurus</a>.`,
     },
-    prism: {
-      theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
-      additionalLanguages: ["python", "bash", "toml"],
+    colorMode: {
+      defaultMode: "light",
+      disableSwitch: false,
+      respectPrefersColorScheme: true,
     },
   } satisfies Preset.ThemeConfig,
 };
