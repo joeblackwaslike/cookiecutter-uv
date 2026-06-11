@@ -29,3 +29,11 @@ uv run mypy .          # type check
 `CLAUDE.md` contains only `@AGENTS.md` so Claude Code imports this file inline.
 
 Do **not** write `@filename` imports in AGENTS.md — that syntax is Claude Code-only and does nothing in other tools.
+
+## Setup
+
+Get a working dev environment — creates the virtualenv and installs the pre-commit hooks:
+
+```sh
+make install
+```
