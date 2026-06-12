@@ -1,11 +1,42 @@
-Getting started
-===============
+---
+title: Getting Started
+---
 
-This is where you describe how to get set up on a clean install, including the
-commands necessary to get the raw data (using the `sync_data_from_s3` command,
-for example), and then how to make the cleaned, final data sets.
+# Getting Started
 
-```py title="add_numbers.py linenums=1"
-def add(num1, num2):
-    return num1 + num2)
+## 1. Install
+
+```bash
+pip install {{cookiecutter.project_name}}
 ```
+
+## 2. Basic Usage
+
+```python
+from {{cookiecutter.project_slug}} import your_main_export
+
+# Replace with the simplest real usage example
+result = your_main_export(
+    # required options
+)
+```
+
+## 3. Configuration
+
+```python
+from {{cookiecutter.project_slug}} import your_main_export
+
+result = your_main_export(
+    # common configuration options
+    option1="value",
+    option2=True,
+)
+```
+
+See the [Configuration reference](./reference/configuration) for all options.
+
+## Next Steps
+
+- [User Guide](./user-guide/) — in-depth feature documentation
+- [API Reference](./api) — auto-generated from docstrings
+- [Examples](./examples) — real-world usage patterns
