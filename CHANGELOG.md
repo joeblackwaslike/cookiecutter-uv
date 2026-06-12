@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0](https://github.com/joeblackwaslike/spinup-py/compare/v0.2.0...v0.3.0) (2026-06-12)
+
+
+### Features
+
+* **template:** add .tool-versions with dynamic python version ([646106d](https://github.com/joeblackwaslike/spinup-py/commit/646106d3915af1c1d014bd5399ceb015bb806b41))
+* **template:** restructure docs to match spinup-ts layout ([047fd7f](https://github.com/joeblackwaslike/spinup-py/commit/047fd7f7c4cb5c1bcf9b24d97df662e955b1d824))
+* use serena CLI for project init and add --shared-server to beads ([37197ac](https://github.com/joeblackwaslike/spinup-py/commit/37197ac278af2f7b9316d8af0cfe2ab480098bcc))
+
+
+### Bug Fixes
+
+* **ci:** docs-deploy deps + release-please/prettier hygiene ([#5](https://github.com/joeblackwaslike/spinup-py/issues/5)) ([4fcd905](https://github.com/joeblackwaslike/spinup-py/commit/4fcd90527182664ff594e23174a8af34e1428db9))
+* **ci:** exclude release-please-owned files from prettier ([72134db](https://github.com/joeblackwaslike/spinup-py/commit/72134db26ed75e8f81a4a82384af05bb6bb76d23))
+* **ci:** install mkdocs deps for docs deploy ([e8b66ba](https://github.com/joeblackwaslike/spinup-py/commit/e8b66babd0778de7e6d9333dcaf51f9c3694bef9))
+* **ci:** use docs group in the manual on-release-main docs deploy too ([32d3ed6](https://github.com/joeblackwaslike/spinup-py/commit/32d3ed62442f6ca68385cd340fe26fb6fa024930))
+
+
+### Documentation
+
+* **template:** add setup step to AGENTS.md ([e052441](https://github.com/joeblackwaslike/spinup-py/commit/e0524413b7e735c5fa0f8e410aed07d429bb56a7))
+
 ## [0.2.0](https://github.com/joeblackwaslike/spinup-py/compare/v0.1.0...v0.2.0) (2026-06-10)
 
 
