@@ -1,0 +1,1563 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A cookiecutter template for Python projects that use uv for its dependency management">
+      
+      
+        <meta name="author" content="Joe Black">
+      
+      
+        <link rel="canonical" href="https://joeblackwaslike.github.io/spinup-py/superpowers/plans/2026-06-08-spinup-py-rename-and-cicd/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>spinup-py: Rename + CI/CD & PyPI Publishing — Implementation Plan - spinup-py</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#spinup-py-rename-cicd-pypi-publishing-implementation-plan" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="spinup-py" class="md-header__button md-logo" aria-label="spinup-py" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            spinup-py
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              spinup-py: Rename + CI/CD &amp; PyPI Publishing — Implementation Plan
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="astral-light" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="astral-dark" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/joeblackwaslike/spinup-py" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joeblackwaslike/spinup-py
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="spinup-py" class="md-nav__button md-logo" aria-label="spinup-py" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    spinup-py
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/joeblackwaslike/spinup-py" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joeblackwaslike/spinup-py
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Features
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/cicd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI/CD with Github Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/linting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linting & code quality
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/makefile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Makefile
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/uv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dependency management with uv
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/publishing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Publishing to PyPI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/pytest/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing with Pytest
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/codecov/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test coverage with codecov
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/mkdocs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation with MkDocs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/tox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Compatibility testing with Tox
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Containerization with Docker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../features/devcontainer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Devcontainer with VSCode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../prompt_arguments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prompt Arguments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#file-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-1-rename-import-package-create_py_project-spinup_py" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 1: Rename import package create_py_project → spinup_py
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-2-rename-the-distribution-cli-to-spinup-py-in-pyprojecttoml-and-clipy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 2: Rename the distribution + CLI to spinup-py in pyproject.toml and cli.py
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-3-update-remaining-name-references-hooks-serena-mkdocs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 3: Update remaining name references (hooks, serena, mkdocs)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-4-add-defaults-only-non-interactive-build_default_config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 4: Add defaults-only --non-interactive — build_default_config
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-5-thread-non_interactive-through-run_new-and-scaffold" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 5: Thread non_interactive through run_new and scaffold
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-6-wire-non-interactive-into-the-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 6: Wire --non-interactive into the CLI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-7-add-the-build-and-smoke-ci-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 7: Add the build-and-smoke CI job
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-8-release-please-config-workflow-with-trusted-publishing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 8: release-please config + workflow with Trusted Publishing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-9-readme-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 9: README &amp; docs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-10-full-local-gate-push-open-pr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 10: Full local gate + push + open PR
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-11-manual-setup-checklist-human-only-cannot-be-automated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 11: Manual setup checklist (human-only — cannot be automated)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#self-review" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Self-Review
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="spinup-py-rename-cicd-pypi-publishing-implementation-plan">spinup-py: Rename + CI/CD &amp; PyPI Publishing — Implementation Plan<a class="headerlink" href="#spinup-py-rename-cicd-pypi-publishing-implementation-plan" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>For agentic workers:</strong> REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (<code>- [ ]</code>) syntax for tracking.</p>
+</blockquote>
+<p><strong>Goal:</strong> Rebrand <code>create-py-project</code> → <code>spinup-py</code> (package, CLI, import, repo, local path) and add a CI smoke test + release-please → PyPI Trusted Publishing pipeline.</p>
+<p><strong>Architecture:</strong> Phased: (0) mechanical rename, (1) defaults-only <code>--non-interactive</code> CLI mode, (2) <code>build-and-smoke</code> CI job exercising the built wheel, (3) release-please + OIDC publish in one workflow (publish &amp; docs-deploy gated on <code>release_created</code> to dodge the GITHUB_TOKEN no-trigger gotcha), (4) README/docs, (5) human-only manual setup. Branch: <code>feat/spinup-py-rename-cicd</code>.</p>
+<p><strong>Tech Stack:</strong> Python 3.10–3.13, uv, Typer, cookiecutter, pydantic v2, pytest, GitHub Actions, <code>googleapis/release-please-action</code>, <code>pypa/gh-action-pypi-publish</code>.</p>
+<p>Spec: <code>docs/superpowers/specs/2026-06-08-spinup-py-rename-and-cicd-design.md</code></p>
+<hr />
+<h2 id="file-structure">File Structure<a class="headerlink" href="#file-structure" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>src/create_py_project/</code> → <code>src/spinup_py/</code> (all modules; one responsibility each, unchanged).</li>
+<li><code>pyproject.toml</code> — package name, console script, URLs.</li>
+<li><code>src/spinup_py/cli.py</code> — Typer app: add <code>--non-interactive</code>.</li>
+<li><code>src/spinup_py/prompts.py</code> — add <code>build_default_config()</code> (pure, non-interactive config).</li>
+<li><code>src/spinup_py/scaffold.py</code> — thread <code>non_interactive</code> to skip the push prompt.</li>
+<li><code>tests/</code> — update imports; add non-interactive tests.</li>
+<li><code>.github/workflows/main.yml</code> — add <code>build-and-smoke</code> job.</li>
+<li><code>.github/workflows/release-please.yml</code> (new), <code>release-please-config.json</code> (new), <code>.release-please-manifest.json</code> (new).</li>
+<li><code>.github/workflows/on-release-main.yml</code> — retire the <code>release:</code> trigger.</li>
+<li><code>README.md</code>, <code>mkdocs.yml</code>, <code>hooks/scripts/install-cli.sh</code>, <code>.serena/project.yml</code> — name references.</li>
+</ul>
+<hr />
+<h2 id="task-1-rename-import-package-create_py_project-spinup_py">Task 1: Rename import package <code>create_py_project</code> → <code>spinup_py</code><a class="headerlink" href="#task-1-rename-import-package-create_py_project-spinup_py" title="Permanent link">&para;</a></h2>
+<p><strong>Files:</strong></p>
+<ul>
+<li>Move: <code>src/create_py_project/</code> → <code>src/spinup_py/</code></li>
+<li>
+<p>Modify: every <code>from create_py_project</code>/<code>import create_py_project</code> in <code>src/</code> and <code>tests/</code></p>
+</li>
+<li>
+<p>[ ] <strong>Step 1: Move the package directory (preserve history)</strong></p>
+</li>
+</ul>
+<pre><code class="language-bash">git mv src/create_py_project src/spinup_py
+</code></pre>
+<ul>
+<li>[ ] <strong>Step 2: Rewrite all internal imports</strong></li>
+</ul>
+<pre><code class="language-bash">grep -rl &quot;create_py_project&quot; src tests | while read -r f; do
+  sed -i '' 's/create_py_project/spinup_py/g' &quot;$f&quot;
+done
+# sanity: no references remain in code
+grep -rn &quot;create_py_project&quot; src tests || echo &quot;clean&quot;
+</code></pre>
+<ul>
+<li>[ ] <strong>Step 3: Run the suite to confirm the rename is consistent</strong></li>
+</ul>
+<p>Run: <code>PYTHONPATH="$PWD" .venv/bin/python -m pytest -q</code>
+Expected: PASS (same count as before, currently 47). If imports were missed, failures name the file — fix and re-run.</p>
+<ul>
+<li>[ ] <strong>Step 4: Commit</strong></li>
+</ul>
+<pre><code class="language-bash">git add -A
+git commit -m &quot;refactor: rename import package create_py_project -&gt; spinup_py&quot;
+</code></pre>
+<hr />
+<h2 id="task-2-rename-the-distribution-cli-to-spinup-py-in-pyprojecttoml-and-clipy">Task 2: Rename the distribution + CLI to <code>spinup-py</code> in <code>pyproject.toml</code> and <code>cli.py</code><a class="headerlink" href="#task-2-rename-the-distribution-cli-to-spinup-py-in-pyprojecttoml-and-clipy" title="Permanent link">&para;</a></h2>
+<p><strong>Files:</strong></p>
+<ul>
+<li>Modify: <code>pyproject.toml</code> (<code>[project].name</code>, <code>[project.scripts]</code>, <code>[project.urls]</code>)</li>
+<li>
+<p>Modify: <code>src/spinup_py/cli.py</code> (Typer <code>name</code>, <code>pkg_version</code>)</p>
+</li>
+<li>
+<p>[ ] <strong>Step 1: Update <code>pyproject.toml</code></strong></p>
+</li>
+</ul>
+<p>Set:</p>
+<pre><code class="language-toml">[project]
+name = &quot;spinup-py&quot;
+# ...
+[project.scripts]
+spinup-py = &quot;spinup_py.cli:app&quot;
+
+[project.urls]
+Repository = &quot;https://github.com/joeblackwaslike/spinup-py&quot;
+Documentation = &quot;https://joeblackwaslike.github.io/spinup-py/&quot;
+Homepage = &quot;https://joeblackwaslike.github.io/spinup-py/&quot;
+</code></pre>
+<p>Remove the old <code>create-py-project = ...</code> script line.</p>
+<ul>
+<li>[ ] <strong>Step 2: Update <code>cli.py</code> identifiers</strong></li>
+</ul>
+<p>In <code>src/spinup_py/cli.py</code>: <code>app = typer.Typer(name="spinup-py", ...)</code> and <code>typer.echo(pkg_version("spinup-py"))</code> (keep the <code>PackageNotFoundError</code> fallback).</p>
+<ul>
+<li>[ ] <strong>Step 3: Re-sync so the new entry point installs</strong></li>
+</ul>
+<p>Run: <code>uv sync</code> then <code>uv run spinup-py --version</code>
+Expected: prints <code>0.1.0</code> (and the old <code>create-py-project</code> command is gone).</p>
+<ul>
+<li>[ ] <strong>Step 4: Run tests + mypy</strong></li>
+</ul>
+<p>Run: <code>PYTHONPATH="$PWD" .venv/bin/python -m pytest -q &amp;&amp; .venv/bin/mypy src</code>
+Expected: PASS / <code>Success: no issues found</code>.</p>
+<ul>
+<li>[ ] <strong>Step 5: Commit</strong></li>
+</ul>
+<pre><code class="language-bash">git add pyproject.toml src/spinup_py/cli.py uv.lock
+git commit -m &quot;refactor: rename distribution + CLI to spinup-py&quot;
+</code></pre>
+<hr />
+<h2 id="task-3-update-remaining-name-references-hooks-serena-mkdocs">Task 3: Update remaining name references (hooks, serena, mkdocs)<a class="headerlink" href="#task-3-update-remaining-name-references-hooks-serena-mkdocs" title="Permanent link">&para;</a></h2>
+<p><strong>Files:</strong></p>
+<ul>
+<li>
+<p>Modify: <code>hooks/scripts/install-cli.sh</code>, <code>.serena/project.yml</code>, <code>mkdocs.yml</code></p>
+</li>
+<li>
+<p>[ ] <strong>Step 1: Replace command/name references</strong></p>
+</li>
+</ul>
+<pre><code class="language-bash">grep -rln &quot;create-py-project\|create_py_project&quot; hooks .serena mkdocs.yml 2&gt;/dev/null
+sed -i '' 's/create-py-project/spinup-py/g' hooks/scripts/install-cli.sh .serena/project.yml mkdocs.yml
+</code></pre>
+<p>Verify the <code>install-cli.sh</code> guard line still references <code>$CLAUDE_PLUGIN_ROOT</code> correctly and the install command is <code>uv tool install --editable .</code> (unchanged) with status text now saying <code>spinup-py</code>.</p>
+<ul>
+<li>[ ] <strong>Step 2: Verify the hook script is still valid</strong></li>
+</ul>
+<p>Run: <code>shellcheck hooks/scripts/install-cli.sh</code>
+Expected: no output (clean).</p>
+<ul>
+<li>[ ] <strong>Step 3: Commit</strong></li>
+</ul>
+<pre><code class="language-bash">git add hooks/scripts/install-cli.sh .serena/project.yml mkdocs.yml
+git commit -m &quot;refactor: update name references to spinup-py (hooks/serena/mkdocs)&quot;
+</code></pre>
+<hr />
+<h2 id="task-4-add-defaults-only-non-interactive-build_default_config">Task 4: Add defaults-only <code>--non-interactive</code> — <code>build_default_config</code><a class="headerlink" href="#task-4-add-defaults-only-non-interactive-build_default_config" title="Permanent link">&para;</a></h2>
+<p><strong>Files:</strong></p>
+<ul>
+<li>Modify: <code>src/spinup_py/prompts.py</code> (add <code>build_default_config</code>)</li>
+<li>
+<p>Test: <code>tests/test_units.py</code></p>
+</li>
+<li>
+<p>[ ] <strong>Step 1: Write the failing test</strong></p>
+</li>
+</ul>
+<pre><code class="language-python"># tests/test_units.py
+from spinup_py.prompts import build_default_config
+
+def test_build_default_config_uses_defaults():
+    cfg = build_default_config(&quot;my-proj&quot;)
+    assert cfg.project_name == &quot;my-proj&quot;
+    assert cfg.project_slug == &quot;my_proj&quot;
+    assert cfg.open_source_license == &quot;MIT license&quot;
+    assert cfg.deptry is True
+    assert cfg.include_github_actions is True
+    assert cfg.devcontainer is True
+    assert cfg.include_docs is False
+    assert cfg.codecov is False
+    assert cfg.publish_to_pypi is False
+</code></pre>
+<ul>
+<li>[ ] <strong>Step 2: Run it to verify it fails</strong></li>
+</ul>
+<p>Run: <code>PYTHONPATH="$PWD" .venv/bin/python -m pytest tests/test_units.py::test_build_default_config_uses_defaults -q</code>
+Expected: FAIL (<code>ImportError: cannot import name 'build_default_config'</code>).</p>
+<ul>
+<li>[ ] <strong>Step 3: Implement <code>build_default_config</code></strong></li>
+</ul>
+<pre><code class="language-python"># src/spinup_py/prompts.py  (add near run_prompts)
+def build_default_config(project_name: str) -&gt; ProjectConfig:
+    &quot;&quot;&quot;Build a ProjectConfig from saved/built-in defaults with no prompts.&quot;&quot;&quot;
+    defaults = load_user_defaults()
+    return ProjectConfig.create(
+        project_name=project_name,
+        description=&quot;&quot;,
+        author=defaults.author,
+        email=defaults.email,
+        github_handle=defaults.github_handle,
+        python_version=defaults.python_version,
+        include_github_actions=True,
+        devcontainer=True,
+        include_docs=False,
+        codecov=False,
+        dockerfile=False,
+        deptry=True,
+        publish_to_pypi=False,
+        open_source_license=&quot;MIT license&quot;,
+    )
+</code></pre>
+<ul>
+<li>[ ] <strong>Step 4: Run it to verify it passes</strong></li>
+</ul>
+<p>Run: <code>PYTHONPATH="$PWD" .venv/bin/python -m pytest tests/test_units.py::test_build_default_config_uses_defaults -q</code>
+Expected: PASS.</p>
+<ul>
+<li>[ ] <strong>Step 5: Commit</strong></li>
+</ul>
+<pre><code class="language-bash">git add src/spinup_py/prompts.py tests/test_units.py
+git commit -m &quot;feat: add build_default_config for non-interactive scaffolding&quot;
+</code></pre>
+<hr />
+<h2 id="task-5-thread-non_interactive-through-run_new-and-scaffold">Task 5: Thread <code>non_interactive</code> through <code>run_new</code> and <code>scaffold</code><a class="headerlink" href="#task-5-thread-non_interactive-through-run_new-and-scaffold" title="Permanent link">&para;</a></h2>
+<p><strong>Files:</strong></p>
+<ul>
+<li>Modify: <code>src/spinup_py/scaffold.py</code> (<code>run_new</code>, <code>scaffold</code>)</li>
+<li>
+<p>Test: <code>tests/test_units.py</code></p>
+</li>
+<li>
+<p>[ ] <strong>Step 1: Write the failing test (push prompt is skipped when non-interactive)</strong></p>
+</li>
+</ul>
+<pre><code class="language-python"># tests/test_units.py
+from pathlib import Path
+import pytest
+from spinup_py import scaffold as scaffold_mod
+
+def test_scaffold_non_interactive_skips_push_prompt(tmp_path, monkeypatch):
+    cfg = _config(project_name=&quot;ni-proj&quot;)  # _config helper already in this file
+    project_dir = tmp_path / &quot;ni-proj&quot;
+
+    def fake_cookiecutter(*a, **k):
+        project_dir.mkdir(parents=True)
+        return str(project_dir)
+    monkeypatch.setattr(scaffold_mod, &quot;cookiecutter&quot;, fake_cookiecutter)
+    monkeypatch.setattr(scaffold_mod, &quot;_template_dir&quot;, lambda: str(tmp_path))
+    monkeypatch.setattr(scaffold_mod, &quot;_run&quot;, lambda cmd, cwd: None)  # git no-ops
+
+    # If a questionary prompt is reached, fail loudly:
+    def boom(*a, **k):
+        raise AssertionError(&quot;prompt should not be called in non-interactive mode&quot;)
+    monkeypatch.setattr(scaffold_mod.questionary, &quot;select&quot;, boom)
+
+    scaffold_mod.scaffold(str(project_dir), cfg, non_interactive=True)
+    assert (project_dir / &quot;.serena&quot; / &quot;project.yml&quot;).exists()
+</code></pre>
+<ul>
+<li>[ ] <strong>Step 2: Run it to verify it fails</strong></li>
+</ul>
+<p>Run: <code>PYTHONPATH="$PWD" .venv/bin/python -m pytest tests/test_units.py::test_scaffold_non_interactive_skips_push_prompt -q</code>
+Expected: FAIL (<code>scaffold() got an unexpected keyword argument 'non_interactive'</code>).</p>
+<ul>
+<li>[ ] <strong>Step 3: Add the <code>non_interactive</code> parameter</strong></li>
+</ul>
+<p>In <code>src/spinup_py/scaffold.py</code>, change <code>def scaffold(dest_dir: str, config: ProjectConfig) -&gt; None:</code> to <code>def scaffold(dest_dir: str, config: ProjectConfig, non_interactive: bool = False) -&gt; None:</code> and guard the GitHub block:</p>
+<pre><code class="language-python">    # GitHub
+    if not non_interactive:
+        push_choice = questionary.select(&quot;Push to GitHub?&quot;, choices=[&quot;public&quot;, &quot;private&quot;, &quot;skip&quot;], default=&quot;skip&quot;).ask()
+        if push_choice in (&quot;public&quot;, &quot;private&quot;):
+            console.print(&quot;[dim]Creating GitHub repo...[/dim]&quot;)
+            try:
+                subprocess.run(
+                    [&quot;gh&quot;, &quot;repo&quot;, &quot;create&quot;, f&quot;{config.github_handle}/{config.project_name}&quot;,
+                     f&quot;--{push_choice}&quot;, &quot;--source=.&quot;, &quot;--remote=origin&quot;, &quot;--push&quot;],
+                    cwd=project_dir, check=True,
+                )
+            except (subprocess.CalledProcessError, FileNotFoundError) as exc:
+                console.print(f&quot;[yellow]GitHub repo creation failed: {exc}[/yellow]&quot;)
+                console.print(&quot;[dim]You can push manually later with: gh repo create[/dim]&quot;)
+</code></pre>
+<p>Update <code>run_new</code>:</p>
+<pre><code class="language-python">def run_new(project_name: str | None, non_interactive: bool = False) -&gt; None:
+    if non_interactive:
+        if not project_name:
+            console.print(&quot;[red]--non-interactive requires a project name[/red]&quot;)
+            raise SystemExit(2)
+        from spinup_py.prompts import build_default_config
+        config = build_default_config(project_name)
+    else:
+        from spinup_py.prompts import run_prompts
+        config = run_prompts(project_name)
+    dest_dir = str(Path.cwd() / config.project_name)
+    scaffold(dest_dir, config, non_interactive=non_interactive)
+</code></pre>
+<ul>
+<li>[ ] <strong>Step 4: Run it to verify it passes</strong></li>
+</ul>
+<p>Run: <code>PYTHONPATH="$PWD" .venv/bin/python -m pytest tests/test_units.py -q &amp;&amp; .venv/bin/mypy src</code>
+Expected: PASS / <code>Success</code>.</p>
+<ul>
+<li>[ ] <strong>Step 5: Commit</strong></li>
+</ul>
+<pre><code class="language-bash">git add src/spinup_py/scaffold.py tests/test_units.py
+git commit -m &quot;feat: thread non_interactive through run_new/scaffold (skip push prompt)&quot;
+</code></pre>
+<hr />
+<h2 id="task-6-wire-non-interactive-into-the-cli">Task 6: Wire <code>--non-interactive</code> into the CLI<a class="headerlink" href="#task-6-wire-non-interactive-into-the-cli" title="Permanent link">&para;</a></h2>
+<p><strong>Files:</strong></p>
+<ul>
+<li>Modify: <code>src/spinup_py/cli.py</code></li>
+<li>
+<p>Test: <code>tests/test_units.py</code></p>
+</li>
+<li>
+<p>[ ] <strong>Step 1: Write the failing test (flag routes to non-interactive)</strong></p>
+</li>
+</ul>
+<pre><code class="language-python"># tests/test_units.py
+from typer.testing import CliRunner
+from spinup_py.cli import app
+
+def test_cli_non_interactive_flag_routes(monkeypatch):
+    called = {}
+    import spinup_py.scaffold as scaffold_mod
+    monkeypatch.setattr(scaffold_mod, &quot;run_new&quot;, lambda name, non_interactive=False: called.update(name=name, ni=non_interactive))
+    # also patch the symbol imported lazily inside cli.main
+    result = CliRunner().invoke(app, [&quot;my-proj&quot;, &quot;--non-interactive&quot;])
+    assert result.exit_code == 0
+    assert called == {&quot;name&quot;: &quot;my-proj&quot;, &quot;ni&quot;: True}
+</code></pre>
+<ul>
+<li>[ ] <strong>Step 2: Run it to verify it fails</strong></li>
+</ul>
+<p>Run: <code>PYTHONPATH="$PWD" .venv/bin/python -m pytest tests/test_units.py::test_cli_non_interactive_flag_routes -q</code>
+Expected: FAIL (no such option <code>--non-interactive</code>).</p>
+<ul>
+<li>[ ] <strong>Step 3: Add the option to the callback and <code>new</code> subcommand</strong></li>
+</ul>
+<p>In <code>src/spinup_py/cli.py</code>, add to <code>main(...)</code> params:</p>
+<pre><code class="language-python">    non_interactive: bool = typer.Option(False, &quot;--non-interactive&quot;, &quot;-y&quot;, help=&quot;Scaffold with defaults, no prompts&quot;),
+</code></pre>
+<p>and in the <code>elif project_name is not None:</code> branch:</p>
+<pre><code class="language-python">        from spinup_py.scaffold import run_new
+        run_new(project_name, non_interactive=non_interactive)
+</code></pre>
+<p>Add the same option to <code>new_cmd</code> and pass it through to <code>run_new</code>.</p>
+<blockquote>
+<p>Note: the test patches <code>spinup_py.scaffold.run_new</code>; ensure <code>cli.py</code> calls <code>run_new</code> via <code>from spinup_py.scaffold import run_new</code> inside the function (lazy import) so the monkeypatch on the module attribute is observed. If patching the module attribute is unreliable, the test may instead assert on <code>result.stdout</code>/a created dir — keep the assertion on the routing call.</p>
+</blockquote>
+<ul>
+<li>[ ] <strong>Step 4: Run it to verify it passes</strong></li>
+</ul>
+<p>Run: <code>PYTHONPATH="$PWD" .venv/bin/python -m pytest tests/test_units.py -q</code>
+Expected: PASS.</p>
+<ul>
+<li>[ ] <strong>Step 5: Manual end-to-end check</strong></li>
+</ul>
+<p>Run: <code>cd "$(mktemp -d)" &amp;&amp; uv run --project /Users/joe/github/joeblackwaslike/create-py-project spinup-py demo-proj --non-interactive &amp;&amp; ls demo-proj</code>
+Expected: <code>demo-proj/</code> created with <code>pyproject.toml</code>, <code>src/demo_proj/</code>, <code>tests/</code>; no prompts appeared.</p>
+<ul>
+<li>[ ] <strong>Step 6: Commit</strong></li>
+</ul>
+<pre><code class="language-bash">git add src/spinup_py/cli.py tests/test_units.py
+git commit -m &quot;feat: add --non-interactive flag to the CLI&quot;
+</code></pre>
+<hr />
+<h2 id="task-7-add-the-build-and-smoke-ci-job">Task 7: Add the <code>build-and-smoke</code> CI job<a class="headerlink" href="#task-7-add-the-build-and-smoke-ci-job" title="Permanent link">&para;</a></h2>
+<p><strong>Files:</strong></p>
+<ul>
+<li>
+<p>Modify: <code>.github/workflows/main.yml</code></p>
+</li>
+<li>
+<p>[ ] <strong>Step 1: Append the job</strong> (after <code>tests-and-type-check</code>)</p>
+</li>
+</ul>
+<pre><code class="language-yaml">build-and-smoke:
+  runs-on: ubuntu-latest
+  steps:
+    - name: Check out
+      uses: actions/checkout@v4
+
+    - name: Set up the environment
+      uses: ./.github/actions/setup-python-env
+
+    - name: Build distributions
+      run: uv build
+
+    - name: Smoke-test the built wheel in a clean venv
+      run: |
+        set -euo pipefail
+        python -m venv /tmp/smoke
+        /tmp/smoke/bin/pip install --quiet dist/*.whl
+        /tmp/smoke/bin/spinup-py --version
+        /tmp/smoke/bin/spinup-py --help
+        /tmp/smoke/bin/spinup-py new --help
+        /tmp/smoke/bin/spinup-py update --help
+        workdir=&quot;$(mktemp -d)&quot;
+        ( cd &quot;$workdir&quot; &amp;&amp; /tmp/smoke/bin/spinup-py smoketest-proj --non-interactive )
+        test -f &quot;$workdir/smoketest-proj/pyproject.toml&quot;
+        test -d &quot;$workdir/smoketest-proj/src/smoketest_proj&quot;
+        test -d &quot;$workdir/smoketest-proj/tests&quot;
+        echo &quot;smoke OK&quot;
+
+    - name: Upload distributions
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist
+        path: dist/
+</code></pre>
+<ul>
+<li>[ ] <strong>Step 2: Lint the workflow</strong></li>
+</ul>
+<p>Run: <code>actionlint .github/workflows/main.yml</code> (or <code>uvx actionlint</code>); if unavailable, validate YAML: <code>python -c "import yaml,sys; yaml.safe_load(open('.github/workflows/main.yml'))"</code>
+Expected: no errors.</p>
+<ul>
+<li>[ ] <strong>Step 3: Reproduce the smoke steps locally</strong></li>
+</ul>
+<p>Run the body of the smoke step manually from the repo root (build, venv, install wheel, run <code>spinup-py ... --non-interactive</code>, assert tree).
+Expected: <code>smoke OK</code>. (<code>spinup-py smoketest-proj --non-interactive</code> must not prompt and must not attempt a git push.)</p>
+<ul>
+<li>[ ] <strong>Step 4: Commit</strong></li>
+</ul>
+<pre><code class="language-bash">git add .github/workflows/main.yml
+git commit -m &quot;ci: add build-and-smoke job exercising the built wheel&quot;
+</code></pre>
+<hr />
+<h2 id="task-8-release-please-config-workflow-with-trusted-publishing">Task 8: release-please config + workflow with Trusted Publishing<a class="headerlink" href="#task-8-release-please-config-workflow-with-trusted-publishing" title="Permanent link">&para;</a></h2>
+<p><strong>Files:</strong></p>
+<ul>
+<li>Create: <code>release-please-config.json</code>, <code>.release-please-manifest.json</code>, <code>.github/workflows/release-please.yml</code></li>
+<li>
+<p>Modify: <code>.github/workflows/on-release-main.yml</code> (retire <code>release:</code> trigger)</p>
+</li>
+<li>
+<p>[ ] <strong>Step 1: Create <code>release-please-config.json</code></strong></p>
+</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;$schema&quot;: &quot;https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json&quot;,
+  &quot;packages&quot;: {
+    &quot;.&quot;: {
+      &quot;release-type&quot;: &quot;python&quot;,
+      &quot;package-name&quot;: &quot;spinup-py&quot;,
+      &quot;changelog-path&quot;: &quot;CHANGELOG.md&quot;,
+      &quot;include-component-in-tag&quot;: false
+    }
+  }
+}
+</code></pre>
+<ul>
+<li>[ ] <strong>Step 2: Create <code>.release-please-manifest.json</code></strong></li>
+</ul>
+<pre><code class="language-json">{ &quot;.&quot;: &quot;0.1.0&quot; }
+</code></pre>
+<ul>
+<li>[ ] <strong>Step 3: Create <code>.github/workflows/release-please.yml</code></strong></li>
+</ul>
+<pre><code class="language-yaml">name: release-please
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.rp.outputs.release_created }}
+      tag_name: ${{ steps.rp.outputs.tag_name }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: rp
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  publish:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+      - name: Set up the environment
+        uses: ./.github/actions/setup-python-env
+      - name: Build
+        run: uv build
+      - name: Publish to PyPI (Trusted Publishing)
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  deploy-docs:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+      - name: Set up the environment
+        uses: ./.github/actions/setup-python-env
+      - name: Deploy documentation
+        run: uv run mkdocs gh-deploy --force
+</code></pre>
+<ul>
+<li>[ ] <strong>Step 4: Retire the <code>release:</code> trigger in <code>on-release-main.yml</code></strong></li>
+</ul>
+<p>Replace its <code>on:</code> block so it no longer fires on release (docs deploy now lives in <code>release-please.yml</code>). Either delete the file, or convert it to manual-only:</p>
+<pre><code class="language-yaml">name: release-main (manual fallback)
+on:
+  workflow_dispatch:
+</code></pre>
+<p>(keep the existing <code>deploy-docs</code> job body). Document in the file header that automatic docs deploy is handled by <code>release-please.yml</code>.</p>
+<ul>
+<li>[ ] <strong>Step 5: Validate the workflows</strong></li>
+</ul>
+<p>Run: <code>for f in .github/workflows/release-please.yml .github/workflows/on-release-main.yml; do python -c "import yaml; yaml.safe_load(open('$f'))"; done</code> (and <code>actionlint</code> if available).
+Expected: no errors. Confirm <code>.release-please-manifest.json</code> version matches <code>pyproject.toml</code> (<code>0.1.0</code>).</p>
+<ul>
+<li>[ ] <strong>Step 6: Commit</strong></li>
+</ul>
+<pre><code class="language-bash">git add release-please-config.json .release-please-manifest.json .github/workflows/release-please.yml .github/workflows/on-release-main.yml
+git commit -m &quot;ci: add release-please + PyPI Trusted Publishing; retire release-triggered docs&quot;
+</code></pre>
+<hr />
+<h2 id="task-9-readme-docs">Task 9: README &amp; docs<a class="headerlink" href="#task-9-readme-docs" title="Permanent link">&para;</a></h2>
+<p><strong>Files:</strong></p>
+<ul>
+<li>
+<p>Modify: <code>README.md</code> (+ docs pages referencing the old name)</p>
+</li>
+<li>
+<p>[ ] <strong>Step 1: Update install/usage + name references</strong></p>
+</li>
+</ul>
+<pre><code class="language-bash">grep -rln &quot;create-py-project\|create_py_project&quot; README.md docs 2&gt;/dev/null
+sed -i '' 's/create-py-project/spinup-py/g; s/create_py_project/spinup_py/g' README.md
+</code></pre>
+<p>Then by hand: ensure Quickstart shows <code>uvx spinup-py my-project</code> and <code>uv tool install spinup-py</code>; add an "Install from source" note (<code>uv tool install --editable .</code>); document the <code>new</code>/<code>update</code> subcommands, <code>--update</code>, <code>--version</code>, and <code>--non-interactive</code>; add a one-line note that <code>spinup-py</code> is the Python sibling of <code>spinup-ts</code>.</p>
+<ul>
+<li>[ ] <strong>Step 2: Verify no stale references remain</strong></li>
+</ul>
+<p>Run: <code>grep -rn "create-py-project\|create_py_project" README.md docs src tests pyproject.toml | grep -v "{{cookiecutter" || echo "clean"</code>
+Expected: <code>clean</code> (the cookiecutter template tree is intentionally untouched).</p>
+<ul>
+<li>[ ] <strong>Step 3: Commit</strong></li>
+</ul>
+<pre><code class="language-bash">git add README.md docs
+git commit -m &quot;docs: rebrand README/docs to spinup-py + document --non-interactive&quot;
+</code></pre>
+<hr />
+<h2 id="task-10-full-local-gate-push-open-pr">Task 10: Full local gate + push + open PR<a class="headerlink" href="#task-10-full-local-gate-push-open-pr" title="Permanent link">&para;</a></h2>
+<p><strong>Files:</strong> none (verification)</p>
+<ul>
+<li>[ ] <strong>Step 1: Run the full local gate</strong></li>
+</ul>
+<p>Run:</p>
+<pre><code class="language-bash">PYTHONPATH=&quot;$PWD&quot; .venv/bin/python -m pytest -q
+.venv/bin/mypy src
+.venv/bin/deptry .
+.venv/bin/pre-commit run -a
+</code></pre>
+<p>Expected: all green.</p>
+<ul>
+<li>[ ] <strong>Step 2: Push and open the PR</strong></li>
+</ul>
+<pre><code class="language-bash">git push -u origin feat/spinup-py-rename-cicd
+gh pr create --repo joeblackwaslike/create-py-project --fill --title &quot;Rename to spinup-py + CI/CD &amp; PyPI publishing&quot;
+</code></pre>
+<p>Expected: PR created; <code>quality</code>, <code>tests-and-type-check (3.10–3.13)</code>, and the new <code>build-and-smoke</code> job run and pass.</p>
+<ul>
+<li>[ ] <strong>Step 3: Merge once green</strong> (the maintainer merges; do not self-merge unless instructed).</li>
+</ul>
+<hr />
+<h2 id="task-11-manual-setup-checklist-human-only-cannot-be-automated">Task 11: Manual setup checklist (human-only — cannot be automated)<a class="headerlink" href="#task-11-manual-setup-checklist-human-only-cannot-be-automated" title="Permanent link">&para;</a></h2>
+<p>These are <strong>operator actions</strong>; an agent cannot perform them. Surface this checklist to the user.</p>
+<ul>
+<li>[ ] PyPI <strong>pending publisher</strong> (PyPI → account → Publishing): project <code>spinup-py</code>, owner <code>joeblackwaslike</code>, repo <code>spinup-py</code>, workflow <code>release-please.yml</code>, environment <code>pypi</code>.</li>
+<li>[ ] Create GitHub <strong>Environment</strong> <code>pypi</code> (no required reviewers).</li>
+<li>[ ] (Optional) TestPyPI dry-run: add a second pending publisher on test.pypi.org and a one-off <code>repository-url: https://test.pypi.org/legacy/</code> publish to validate OIDC before the first real release.</li>
+<li>[ ] <strong>Rename the GitHub repo</strong> <code>create-py-project</code> → <code>spinup-py</code>, then <code>git remote set-url origin git@github.com:joeblackwaslike/spinup-py.git</code>.</li>
+<li>[ ] <strong>SonarCloud</strong>: update project key/binding to <code>spinup-py</code> (cosmetic).</li>
+<li>[ ] <strong>Local path LAST</strong> (after everything above is committed, pushed, and the repo is renamed):
+  <code>bash
+  cd ~ &amp;&amp; mv ~/github/joeblackwaslike/create-py-project ~/github/joeblackwaslike/spinup-py</code></li>
+<li>[ ] First release: merge the release-please PR → confirm GitHub Release, PyPI <code>spinup-py 0.1.0</code>, and docs deploy.</li>
+</ul>
+<hr />
+<h2 id="self-review">Self-Review<a class="headerlink" href="#self-review" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Spec coverage:</strong> Phase 0 → Tasks 1–3 + 9 + 11 (repo/local path). Phase 1 → Tasks 4–6. Phase 2 → Task 7. Phase 3 → Task 8. Phase 4 → Task 9. Manual setup → Task 11. ✓ All spec sections mapped.</li>
+<li><strong>Placeholder scan:</strong> No TBD/“add error handling”/empty-test placeholders; every code step has concrete content. ✓</li>
+<li><strong>Type/name consistency:</strong> import package <code>spinup_py</code>, dist/command <code>spinup-py</code>, <code>build_default_config(project_name)</code>, <code>run_new(project_name, non_interactive=False)</code>, <code>scaffold(dest_dir, config, non_interactive=False)</code>, manifest version <code>0.1.0</code> == <code>pyproject</code> — consistent across tasks. ✓</li>
+<li><strong>Note:</strong> the <code>_config(...)</code> helper referenced in Tasks 5 already exists in <code>tests/test_units.py</code> (from the prior round). If executing tasks out of order, confirm it's present.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Maintained by <a href="https://joeblackwaslike.com">Florian</a>.
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/joeblackwaslike/spinup-py" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://pypi.org/project/spinup-py/" target="_blank" rel="noopener" title="pypi.org" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6M286.2 444.7a20.4 20.4 0 1 1 0-40.7 20.4 20.4 0 1 1 0 40.7M167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4m-6.6-183.4a20.4 20.4 0 1 1 0 40.8 20.4 20.4 0 1 1 0-40.8"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": [], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
