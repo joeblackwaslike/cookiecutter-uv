@@ -117,7 +117,7 @@ def scaffold(dest_dir: str, config: ProjectConfig, non_interactive: bool = False
     # Beads
     try:
         result = subprocess.run(
-            ["bd", "init", "--skip-agents", "--non-interactive"],
+            ["bd", "init", "--skip-agents", "--non-interactive", "--shared-server"],
             cwd=project_dir,
             capture_output=True,
         )
@@ -127,9 +127,17 @@ def scaffold(dest_dir: str, config: ProjectConfig, non_interactive: bool = False
         console.print("[dim yellow]bd not found or not executable — skipping Beads init[/dim yellow]")
 
     # Serena
-    serena_dir = project_dir / ".serena"
-    serena_dir.mkdir(exist_ok=True)
-    (serena_dir / "project.yml").write_text(f"project_name: {config.project_name}\nlanguage: python\n")
+    try:
+        result = subprocess.run(
+            ["serena", "project", "create", str(project_dir), "--name", config.project_name, "--language", "python"],
+            capture_output=True,
+        )
+        if result.returncode != 0:
+            console.print("[dim yellow]serena project create failed — writing minimal config[/dim yellow]")
+            _serena_fallback(project_dir, config.project_name)
+    except OSError:
+        console.print("[dim yellow]serena not found — writing minimal config[/dim yellow]")
+        _serena_fallback(project_dir, config.project_name)
 
     console.print(f"\n[bold green]✓ Project created at {project_dir}[/bold green]")
     console.print(f"[dim]Next: cd {config.project_name} && uv sync && uv run pre-commit install[/dim]")
@@ -149,6 +157,12 @@ def run_new(project_name: str | None, non_interactive: bool = False) -> None:
         config = run_prompts(project_name)
     dest_dir = str(Path.cwd() / config.project_name)
     scaffold(dest_dir, config, non_interactive=non_interactive)
+
+
+def _serena_fallback(project_dir: Path, project_name: str) -> None:
+    serena_dir = project_dir / ".serena"
+    serena_dir.mkdir(exist_ok=True)
+    (serena_dir / "project.yml").write_text(f"project_name: {project_name}\nlanguage: python\n")
 
 
 class _CommandError(Exception):

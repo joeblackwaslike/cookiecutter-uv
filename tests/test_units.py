@@ -308,6 +308,9 @@ def test_scaffold_non_interactive_skips_push_prompt(tmp_path: Path, monkeypatch:
 
     # Stub out subprocess (gh/bd) so non-interactive scaffold stays hermetic.
     def fake_subprocess_run(*_args: object, **_kwargs: object) -> subprocess.CompletedProcess[str]:
+        cmd = _args[0] if _args else _kwargs.get("args", [])
+        if isinstance(cmd, list) and cmd and cmd[0] == "serena":
+            return subprocess.CompletedProcess(args=cmd, returncode=1, stdout="", stderr="")
         return subprocess.CompletedProcess(args=["x"], returncode=0, stdout="", stderr="")
 
     monkeypatch.setattr(scaffold_mod.subprocess, "run", fake_subprocess_run)

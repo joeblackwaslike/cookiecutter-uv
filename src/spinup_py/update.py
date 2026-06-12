@@ -253,7 +253,7 @@ def _add_deptry(pyproject_path: Path) -> None:
 def _run_beads(target: Path) -> None:
     try:
         result = subprocess.run(
-            ["bd", "init", "--skip-agents", "--non-interactive"],
+            ["bd", "init", "--skip-agents", "--non-interactive", "--shared-server"],
             cwd=target,
             capture_output=True,
             check=False,
@@ -265,6 +265,21 @@ def _run_beads(target: Path) -> None:
 
 
 def _init_serena(target: Path, project_name: str) -> None:
+    try:
+        result = subprocess.run(
+            ["serena", "project", "create", str(target), "--name", project_name, "--language", "python"],
+            capture_output=True,
+            check=False,
+        )
+        if result.returncode != 0:
+            console.print("[yellow]serena project create failed — writing minimal config[/yellow]")
+            _serena_fallback(target, project_name)
+    except OSError:
+        console.print("[yellow]serena not found — writing minimal config[/yellow]")
+        _serena_fallback(target, project_name)
+
+
+def _serena_fallback(target: Path, project_name: str) -> None:
     serena_dir = target / ".serena"
     serena_dir.mkdir(exist_ok=True)
     (serena_dir / "project.yml").write_text(f"project_name: {project_name}\nlanguage: python\n")
@@ -423,7 +438,7 @@ def detect_available_updates(target: Path) -> list[UpdateOption]:
             UpdateOption(
                 value="beads",
                 label="Initialize Beads task manager",
-                hint="Runs: bd init --skip-agents",
+                hint="Runs: bd init --skip-agents --shared-server",
                 apply=lambda t: _run_beads(t),
             )
         )
