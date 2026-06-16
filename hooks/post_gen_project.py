@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import shutil
+import subprocess
 
 PROJECT_DIRECTORY = os.path.realpath(os.path.curdir)
 
@@ -84,3 +85,9 @@ if __name__ == "__main__":
         remove_file("LICENSE_BSD")
         remove_file("LICENSE_ISC")
         remove_file("LICENSE_APACHE")
+
+    try:
+        subprocess.run(["bd", "init", "--shared-server", "--skip-agents"], cwd=PROJECT_DIRECTORY, check=True, capture_output=True)
+        subprocess.run(["bd", "config", "set", "export.auto", "true"], cwd=PROJECT_DIRECTORY, check=True, capture_output=True)
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        pass
