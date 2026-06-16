@@ -1,0 +1,8 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "server",
+  "dolt_database": "spinup_py",
+  "project_id": "db586c6a-c544-45db-84d0-d605c7a1de76",
+  "global_dolt_database": "beads_global"
+}
