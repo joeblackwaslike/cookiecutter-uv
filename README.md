@@ -7,7 +7,8 @@
 [![Build status](https://img.shields.io/github/actions/workflow/status/joeblackwaslike/spinup-py/main.yml?branch=main)](https://github.com/joeblackwaslike/spinup-py/actions/workflows/main.yml?query=branch%3Amain)
 [![Supported Python versions](https://img.shields.io/badge/python-3.10_%7C_3.11_%7C_3.12_%7C_3.13-blue?labelColor=grey&color=blue)](https://github.com/joeblackwaslike/spinup-py/blob/main/pyproject.toml)
 [![Docs](https://img.shields.io/badge/docs-gh--pages-blue)](https://joeblackwaslike.github.io/spinup-py/)
-[![License](https://img.shields.io/github/license/joeblackwaslike/spinup-py)](https://img.shields.io/github/license/joeblackwaslike/spinup-py)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Discord](https://img.shields.io/discord/1486035859747897414?logo=discord&label=Discord&color=5865F2)](https://discord.gg/Fjc9zYHZyV)
 
 This is a modern Cookiecutter template that can be used to initiate a Python project with all the necessary tools for development, testing, and deployment. It supports the following features:
 
