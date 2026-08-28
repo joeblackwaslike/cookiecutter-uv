@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1](https://github.com/joeblackwaslike/spinup-py/compare/v0.3.0...v0.3.1) (2026-08-28)
+
+
+### Bug Fixes
+
+* post-gen hook initializes beads with --shared-server and export.auto=true ([99e914b](https://github.com/joeblackwaslike/spinup-py/commit/99e914b1e940bb188282d418b97444c48f587db4))
+* **template:** point generated README links at spinup-py ([bc8cffc](https://github.com/joeblackwaslike/spinup-py/commit/bc8cffc7618a9c319391d82a0db7a2da3da41bca))
+
+
+### Documentation
+
+* rebrand from Cookiecutter UV to agentic Python scaffolding ([17f23e4](https://github.com/joeblackwaslike/spinup-py/commit/17f23e4096a53fff2113ab86146b9aa6a82e66f5))
+* standardize README badges, install, and license ([3abd436](https://github.com/joeblackwaslike/spinup-py/commit/3abd4368eecc18a54e614a35ec31e2d49f20c973))
+
 ## [0.3.0](https://github.com/joeblackwaslike/spinup-py/compare/v0.2.0...v0.3.0) (2026-06-12)
 
 
