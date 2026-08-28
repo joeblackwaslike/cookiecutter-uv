@@ -7,15 +7,15 @@ bake-with-inputs: ## bake with inputs and overwrite if exists.
 	@uv run cookiecutter . --overwrite-if-exists
 
 .PHONY: bake-and-test-deploy
-bake-and-test-deploy: ## For quick publishing to cookiecutter-uv-example to test GH Actions
-	@rm -rf cookiecutter-uv-example || true
+bake-and-test-deploy: ## For quick publishing to spinup-py-example to test GH Actions
+	@rm -rf spinup-py-example || true
 	@uv run cookiecutter --no-input . --overwrite-if-exists \
 		author="Joe Black" \
 		email="me@joeblack.nyc" \
 		github_author_handle=joeblackwaslike \
-		project_name=cookiecutter-uv-example \
-		project_slug=cookiecutter_uv_example
-	@cd cookiecutter-uv-example; uv sync && \
+		project_name=spinup-py-example \
+		project_slug=spinup_py_example
+	@cd spinup-py-example; uv sync && \
 		git init -b main && \
 		git add . && \
 		uv run pre-commit install && \
@@ -24,7 +24,7 @@ bake-and-test-deploy: ## For quick publishing to cookiecutter-uv-example to test
 		uv run pre-commit run -a || true && \
 		git add . && \
 		git commit -m "init commit" && \
-		git remote add origin git@github.com:joeblackwaslike/cookiecutter-uv-example.git && \
+		git remote add origin git@github.com:joeblackwaslike/spinup-py-example.git && \
 		git push -f origin main
 
 

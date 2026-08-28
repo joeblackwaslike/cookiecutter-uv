@@ -4,7 +4,7 @@ version = "0.3.0"
 description = "Scaffold and maintain production-ready Python projects with a rich CLI and Claude Code plugin."
 authors = [{ name = "Joe Black", email = "me@joeblack.nyc" }]
 readme = "README.md"
-keywords = ['python', 'scaffold', 'cli', 'template', 'uv', 'cookiecutter']
+keywords = ['python', 'scaffold', 'cli', 'template', 'uv', 'agentic', 'claude-code']
 requires-python = ">=3.10,<4.0"
 dependencies = [
   "cookiecutter>=2.1.1",

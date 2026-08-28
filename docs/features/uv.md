@@ -2,7 +2,7 @@
 
 The generated repository will use [uv](https://docs.astral.sh/uv/)
 for its dependency management. When you have created your repository
-using this cookiecutter template, a uv environment is pre-configured
+using spinup-py, a uv environment is pre-configured
 in `pyproject.toml`. All you need to do is add your
 project-specific dependencies with
 

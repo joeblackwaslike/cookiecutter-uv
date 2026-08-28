@@ -1,8 +1,4 @@
-<p align="center">
-  <img width="600" src="https://raw.githubusercontent.com/joeblackwaslike/spinup-py/main/docs/static/cookiecutter.svg">
-</p style = "margin-bottom: 2rem;">
-
----
+# spinup-py
 
 [![Build status](https://img.shields.io/github/actions/workflow/status/joeblackwaslike/spinup-py/main.yml?branch=main)](https://github.com/joeblackwaslike/spinup-py/actions/workflows/main.yml?query=branch%3Amain)
 [![Supported Python versions](https://img.shields.io/badge/python-3.10_%7C_3.11_%7C_3.12_%7C_3.13-blue?labelColor=grey&color=blue)](https://github.com/joeblackwaslike/spinup-py/blob/main/pyproject.toml)
@@ -10,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Discord](https://img.shields.io/discord/1486035859747897414?logo=discord&label=Discord&color=5865F2)](https://discord.gg/Fjc9zYHZyV)
 
-This is a modern Cookiecutter template that can be used to initiate a Python project with all the necessary tools for development, testing, and deployment. It supports the following features:
+Agentic Python scaffolding — spin up production-ready projects pre-wired for AI-assisted development. Ships a Claude Code plugin with slash commands, deterministic linters and type-checkers tuned for agentic workflows, and everything you need for testing, CI/CD, and deployment. Supports the following features:
 
 - [uv](https://docs.astral.sh/uv/) for dependency management
 - Supports [src layout](https://packaging.python.org/en/latest/discussions/src-layout-vs-flat-layout/)
@@ -99,7 +95,7 @@ spinup-py --version
 
 ### Offline / custom template
 
-By default the published CLI fetches its Cookiecutter template from GitHub (`gh:joeblackwaslike/spinup-py`). To use a local or custom template instead — handy when working offline or from a fork — set the `SPINUP_PY_TEMPLATE` environment variable to any Cookiecutter reference (a local path, a different GitHub repo, etc.):
+By default the published CLI fetches its project template from GitHub (`gh:joeblackwaslike/spinup-py`). To use a local or custom template instead — handy when working offline or from a fork — set the `SPINUP_PY_TEMPLATE` environment variable to any Cookiecutter reference (a local path, a different GitHub repo, etc.):
 
 ```shell
 SPINUP_PY_TEMPLATE=/path/to/template spinup-py my-project

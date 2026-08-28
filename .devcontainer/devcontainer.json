@@ -1,5 +1,5 @@
 {
-    "name": "Cookiecutter uv",
+    "name": "spinup-py",
     "image": "ghcr.io/joeblackwaslike/devcontainer:latest",
     "features": {
         "ghcr.io/devcontainers/features/docker-in-docker:2": {

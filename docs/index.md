@@ -1,6 +1,3 @@
-<p align="center">
-  <img width="600" src="static/cookiecutter.svg">
-</p style = "margin-bottom: 2rem;">
 <style>
   .md-typeset h1,
   .md-content__button {
@@ -10,7 +7,7 @@
 
 ---
 
-This is a modern Cookiecutter template that can be used to initiate a Python project with all the necessary tools for development, testing, and deployment. It supports the following features:
+Agentic Python scaffolding — spin up production-ready projects pre-wired for AI-assisted development. Ships a Claude Code plugin with slash commands, deterministic linters and type-checkers tuned for agentic workflows, and everything you need for testing, CI/CD, and deployment. Supports the following features:
 
 - [uv](https://docs.astral.sh/uv/) for dependency management
 - Supports src layout](https://packaging.python.org/en/latest/discussions/src-layout-vs-flat-layout/).
@@ -23,8 +20,6 @@ This is a modern Cookiecutter template that can be used to initiate a Python pro
 - Compatibility testing for multiple versions of Python with [tox-uv](https://github.com/tox-dev/tox-uv)
 - Containerization with [Docker](https://www.docker.com/)
 - Development environment with [VSCode devcontainers](https://code.visualstudio.com/docs/devcontainers/containers)
-
-An example of a repository generated with this package can be found [here](https://github.com/joeblackwaslike/spinup-py-example).
 
 ## Quickstart
 

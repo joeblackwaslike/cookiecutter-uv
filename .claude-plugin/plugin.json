@@ -1,7 +1,7 @@
 {
     "name": "spinup-py",
     "version": "0.1.0",
-    "description": "Scaffold and maintain production-ready Python projects — the Python-ecosystem twin of create-ts-project",
+    "description": "Scaffold and maintain production-ready Python projects — the Python-ecosystem twin of spinup-ts",
     "author": {
         "name": "Joe Black",
         "email": "joeblackwaslike@gmail.com",
